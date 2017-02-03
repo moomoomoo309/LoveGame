@@ -53,7 +53,12 @@
   * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame
-  * Follow [these instructions](https://love2d.org/wiki/PyCharm) To set up the build system.
+  * To set up the build system:
+     * Go to file->settings, and search for external tools.
+     * Add a new tool, and set the following:
+       * Program: path to love.exe (Don't type that directly, put the actual path!)
+       * Parameters: $SourcePath$
+     
   
 Notes on IntelliJ for Love2D Development:
 * The auto completion for Love2D doesn't work once you put a period. If you want love.math.something, type "loma" and it'll pop the suggestions up. 

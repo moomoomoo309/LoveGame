@@ -1,6 +1,7 @@
-Instructions for setting up LoveGame Repo:
+#Instructions for setting up LoveGame Repo:
 
-Before setting up:
+
+##Before setting up:
 * Install git, using any of the following:
   * Git for Windows (has a bunch of extra shit, like a GUI and full BASH shell) https://git-for-windows.github.io/
   * GitHub Desktop (has even more extra shit, with better github integration) https://desktop.github.com/
@@ -8,7 +9,8 @@ Before setting up:
 * Open a terminal and run git. If it isn't found, add it to your PATH environment variable:
   * Instructions: https://www.kb.wisc.edu/cae/page.php?id=24500  
 
-Sublime Text 2/3:
+---
+##Sublime Text 2/3:
   * Install Package Control if it's not already installed. (Ctrl+shift+p, type package, if it shows up, you're good!)
 	
   * Install the following packages:
@@ -44,8 +46,8 @@ Sublime Text 2/3:
      * Finally, hit ctrl+shift+p again, and run git: push.
      * Go to the repo at https://github.com/moomoomoo309/LoveGame and you should see your commit.  
 
----------------------------------------------------------------------------------------------------------------------------
-IntelliJ-based IDEs (PyCharm, IntelliJ, etc.):
+---
+##IntelliJ-based IDEs (PyCharm, IntelliJ, etc.):
   * Go to help->find action, and go to Plugins...
   * Click on "Browse additional repositories"
   * Search for and install the following:

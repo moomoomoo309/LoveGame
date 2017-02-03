@@ -3,11 +3,11 @@
 
 ##Before setting up:
 * Install git, using any of the following:
-  * Git for Windows (has a bunch of extra shit, like a GUI and full BASH shell) https://git-for-windows.github.io/
-  * GitHub Desktop (has even more extra shit, with better github integration) https://desktop.github.com/
-  * Tortoise Git (Simple gui+git, nothing else, works as well as GitHub Desktop, but simpler) https://tortoisegit.org/
+  * [Git for Windows](https://git-for-windows.github.io/) (has a bunch of extra shit, like a GUI and full BASH shell)
+  * [GitHub Desktop](https://desktop.github.com/) (has even more extra shit, with better github integration)
+  * [Tortoise Git](https://tortoisegit.org/) (Simple gui+git, nothing else, works as well as GitHub Desktop, but simpler)
 * Open a terminal and run git. If it isn't found, add it to your PATH environment variable:
-  * Instructions: https://www.kb.wisc.edu/cae/page.php?id=24500  
+  * [Instructions](https://www.kb.wisc.edu/cae/page.php?id=24500)
 
 ---
 ##Sublime Text 2/3:
@@ -27,8 +27,7 @@
   * Go to tools->build system, and switch it to Love.
 	  * Press ctrl+shift+p, run git: clone, enter https://github.com/moomoomoo309/LoveGame as the URL.
 	
-  * Use these instructions to generate an access token for your GitHub account.
-     * https://help.github.com/articles/creating-an-access-token-for-command-line-use/
+  * Use [these instructions](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) to generate an access token for your GitHub account.
 	
   * Open a terminal, and cd into the directory of the repository.
      * If you don't know how to do this...you really should.
@@ -42,7 +41,7 @@
   * To make sure it works, hit ctrl+shift+p and run git: commit, and follow the instructions there.
      * Make the commit message something like "sublime text test commit"
      * Finally, hit ctrl+shift+p again, and run git: push.
-     * Go to the repo at https://github.com/moomoomoo309/LoveGame and you should see your commit.  
+     * Go to [the repo](https://github.com/moomoomoo309/LoveGame) and you should see your commit.  
 
 ---
 ##IntelliJ-based IDEs (PyCharm, IntelliJ, etc.):
@@ -51,8 +50,7 @@
   * Search for and install the following:
     * Floobits
     * Lua
-  * Install the love-IDEA-plugin using the instructions on the page.
-     * https://github.com/rm-code/love-IDEA-plugin
+  * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame
 		

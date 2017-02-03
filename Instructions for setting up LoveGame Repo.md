@@ -32,10 +32,8 @@
 	
   * Open a terminal, and cd into the directory of the repository.
      * If you don't know how to do this...you really should.
-     * cd stands for "change directory", and will go from your current directory (to the left of your cursor)
-     * into the directory you specify.
-     * For example, if you are in a folder called "home", and you want to access a subfolder called "sub",
-     * you run cd sub.
+     * cd stands for "change directory", and will go from your current directory (to the left of your cursor) into the directory you specify.
+     * For example, if you are in a folder called "home", and you want to access a subfolder called "sub", you run cd sub.
      * If you want to go to the parent folder, use .. to refer to the parent directory.
 	
   * Run git config remote.origin.url "https://{token}@github.com/username/project.git"

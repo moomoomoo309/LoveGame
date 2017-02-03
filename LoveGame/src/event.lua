@@ -18,5 +18,9 @@ end
 
 function event:remove(eventName,f)
   local eventList=event.events[eventName]
-  table.remove(f)
+  for i=1,#eventList do
+    if eventList[i]==f then
+      table.remove(eventList,i)
+    end
+  end
 end

@@ -3,15 +3,15 @@
 
 ##Before setting up:
 * Install git, using any of the following:
-  * [Git for Windows](https://git-for-windows.github.io/) (has a bunch of extra shit, like a GUI and full BASH shell)
-  * [GitHub Desktop](https://desktop.github.com/) (has even more extra shit, with better github integration)
+  * [Git for Windows](https://git-for-windows.github.io/) (has a bunch of extra stuff, like a GUI and full BASH shell)
+  * [GitHub Desktop](https://desktop.github.com/) (has even more extra stuff, with better github integration)
   * [Tortoise Git](https://tortoisegit.org/) (Simple gui+git, nothing else, works as well as GitHub Desktop, but simpler)
-* Open a terminal and run git. If it isn't found, add it to your PATH environment variable:
+* Open a terminal and run git. If it isn't found, add it to your PATH:
   * [Instructions](https://www.kb.wisc.edu/cae/page.php?id=24500)
 
 ---
 ##Sublime Text 2/3:
-  * Install Package Control if it's not already installed. (Ctrl+shift+p, type package, if it shows up, you're good!)
+  * Install Package Control if it's not already installed. (ctrl+shift+p, type package, if it shows up, you're good!)
 	
   * Install the following packages:
      * SublimeLove (Love2D integration and build system)
@@ -53,4 +53,8 @@
   * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame
+  * Follow [these instructions](https://love2d.org/wiki/PyCharm) To set up the build system.
+  
+Notes on IntelliJ for Love2D Development:
+* The auto completion for Love2D doesn't work once you put a period. If you want love.math.something, type "loma" and it'll pop the suggestions up. 
 		

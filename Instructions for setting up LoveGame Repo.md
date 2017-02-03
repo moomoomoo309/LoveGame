@@ -6,8 +6,10 @@
   * [Git for Windows](https://git-for-windows.github.io/) (has a bunch of extra stuff, like a GUI and full BASH shell)
   * [GitHub Desktop](https://desktop.github.com/) (has even more extra stuff, with better github integration)
   * [Tortoise Git](https://tortoisegit.org/) (Simple gui+git, nothing else, works as well as GitHub Desktop, but simpler)
+  * sudo apt install git (Linux)
 * Open a terminal and run git. If it isn't found, add it to your PATH:
   * [Instructions](https://www.kb.wisc.edu/cae/page.php?id=24500)
+* Install [Love2D](https://love2d.org/).
 
 ---
 ##Sublime Text 2/3:

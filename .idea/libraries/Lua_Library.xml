@@ -1,0 +1,44 @@
+<component name="libraryTable">
+  <library name="Lua Library" type="Lua">
+    <CLASSES>
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/audio.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/audio.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/event.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/event.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/filesystem.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/filesystem.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/graphics.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/graphics.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/image.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/image.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/joystick.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/joystick.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/keyboard.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/keyboard.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/love.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/love.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/math.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/math.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/mouse.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/mouse.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/physics.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/physics.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/sound.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/sound.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/system.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/system.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/thread.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/thread.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/timer.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/timer.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/touch.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/touch.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/video.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/video.lua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/window.doclua" />
+      <root url="file://$USER_HOME$/love-IDEA-plugin/love_0102/window.lua" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

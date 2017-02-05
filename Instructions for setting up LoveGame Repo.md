@@ -37,7 +37,7 @@
      * For example, if you are in a folder called "home", and you want to access a subfolder called "sub", you run cd sub.
      * If you want to go to the parent folder, use .. to refer to the parent directory.
 	
-  * Run git config remote.origin.url "https://{token}@github.com/username/project.git"
+  * Run git config remote.origin.url "https://{token}@github.com/moomoomoo309/LoveGame.git"
      * Replace {token} with the token you generated on the GitHub site.
 	
   * To make sure it works, hit ctrl+shift+p and run git: commit, and follow the instructions there.

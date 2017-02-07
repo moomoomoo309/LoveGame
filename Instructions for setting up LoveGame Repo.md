@@ -7,7 +7,7 @@
   * [GitHub Desktop](https://desktop.github.com/) (has even more extra stuff, with better github integration)
   * [Tortoise Git](https://tortoisegit.org/) (Simple gui+git, nothing else, works as well as GitHub Desktop, but simpler)
   * sudo apt install git (Linux)
-* Open a terminal and run git. If it isn't found, add it to your PATH:
+* Open a terminal and run git. If it isn't found, add it to your PATH
   * [Instructions](https://www.kb.wisc.edu/cae/page.php?id=24500)
 * Install [Love2D](https://love2d.org/).
 
@@ -25,6 +25,14 @@
      * FormatLua (adds alt+l shortcut to format Lua code)
      * LuaSmartTips (adds auto-complete information for Lua code)
      * SidebarEnhancements (adds more options to the right click menu of files/folders in the sidebar)
+     * BracketHighlighter (Highlights the brackets for the current scope)
+      * If you use the SublimeLove language, you need to add it. It's in the bracket settings, just add "Love" to the Lua language.
+     * ColorCoder (Colors EVERY function and variable in the editor differently. Some people HATE this.)
+     * GitGutter (Shows the diffs between your build and the one on github)
+     * SublimeLinter + SublimeLinter-luacheck (Error checking. You need to install LuaCheck for this, though)
+     * RegExLink (Opens links in your browser by right clicking)
+
+
 	
   * Go to tools->build system, and switch it to Love.
 	  * Press ctrl+shift+p, run git: clone, enter https://github.com/moomoomoo309/LoveGame as the URL.

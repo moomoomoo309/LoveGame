@@ -9,7 +9,7 @@ end
 local skip={}
 functools.skip=skip
 
-function functools.partialGaps(f,...) --Provides default arguments for a function, allowing for gaps. 
+function functools.partialGaps(f,...) --Provides default arguments for a function, allowing for gaps.
   --Not efficient because of how dynamic it is. Do not use if possible.
   local args={...}
   return function(...)
@@ -26,7 +26,7 @@ function functools.partialGaps(f,...) --Provides default arguments for a functio
   end
 end
 
-function functools.reduce(f,numArgs,...) --Apply function of two arguments cumulatively to the args, from left to right, 
+function functools.reduce(f,numArgs,...) --Apply function of two arguments cumulatively to the args, from left to right,
   --so as to reduce the iterable to a single value.
   local result=f(...)
   for i=numArgs,select("#",...),numArgs do

@@ -10,7 +10,7 @@ local w,h=50,50
 local avgColorsPerSecond=1
 event.register("mouseMoved",function(x,y) mousePosX,mousePosY=x,y end)
 function love.update(dt)
-	if math.random(0,1/dt/avgColorsPerSecond)<1 then
+	if math.random(0,1/(dt*avgColorsPerSecond))<1 then
 		abstractions.setColor(math.random(0,255),math.random(0,255),math.random(0,255))
 	end
 end

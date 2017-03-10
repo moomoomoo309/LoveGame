@@ -69,6 +69,7 @@
      * Add a new tool, and set the following:
        * Program: path to love.exe (Don't type that directly, put the actual path!)
        * Parameters: $SourcePath$
+       * Add a shortcut to it (I used Ctrl + B)
      
   
 Notes on IntelliJ for Love2D Development:

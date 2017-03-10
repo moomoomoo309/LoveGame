@@ -1,8 +1,8 @@
-local all=function(...) --Returns the last true value, or false if any value is false.
+local all = function(...) --Returns the last true value, or false if any value is false.
     return select("#", ...) == 1 and (...) or ((...) and all(select(2, ...)))
 end
 
-local any=function(...) --Returns the first true value, or the last false value.
+local any = function(...) --Returns the first true value, or the last false value.
     return (...) or any(select(2, ...))
 end
 

@@ -60,6 +60,7 @@
   * Search for and install the following:
     * Floobits
     * Lua
+    * Hyperlinks (Optional, but useful)
   * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame

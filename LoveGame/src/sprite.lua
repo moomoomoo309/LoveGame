@@ -6,7 +6,7 @@ map = map or require "map"
 
 local sprite
 sprite = sprite or {
-    currentId = -1,
+    currentId = 1,
     sprites = setmetatable({}, { __mode = "v" }),
     spriteKeys = {},
     batches = {},
@@ -46,7 +46,6 @@ sprite = sprite or {
         end
         obj.ox = 1 / obj.image:getWidth()
         obj.oy = 1 / obj.image:getHeight()
-        obj.draw = sprite.draw
         obj.sprite = sprite
         for _, animation in pairs(obj.animations) do
             animation.sprite = obj
@@ -54,7 +53,7 @@ sprite = sprite or {
         sprite.sprites[obj.Id] = obj
         sprite.spriteKeys[#sprite.spriteKeys + 1] = obj.Id
         table.sort(sprite.spriteKeys)
-        return setmetatable(obj, {__index=sprite})
+        return setmetatable(obj, { __index = sprite })
     end,
     copy = function(self, that, args)
         if not args and self and that then --Allows you to call sprite.copy or sprite:copy
@@ -107,20 +106,22 @@ sprite = sprite or {
         else
             img = self.image --No animation.
         end
-        local sx = self.w / img:getWidth() --X scale
-        local sy = self.h / img:getHeight() --Y scale
         if quad then
             local _, _, quadWidth, quadHeight = quad:getViewport()
+            local sx = self.w / quadWidth --X scale
+            local sy = self.h / quadHeight --Y scale
             love.graphics.draw(img,
                 quad,
-                self.flipHorizontal and self.x + self.w * (quadWidth * self.ox) or self.x,
-                self.flipVertical and self.y + self.h * (quadHeight * self.oy) or self.y,
+                self.flipHorizontal and self.x + self.w - sx * self.ox or self.x,
+                self.flipVertical and self.y + self.h - sy * self.oy or self.y + sy * self.oy,
                 math.rad(self.rotation),
                 self.flipHorizontal and -sx or sx,
                 self.flipVertical and -sy or sy,
                 self.ox,
                 self.oy)
         else
+            local sx = self.w / img:getWidth() --X scale
+            local sy = self.h / img:getHeight() --Y scale
             love.graphics.draw(img,
                 self.flipHorizontal and self.x + self.w * (self.image:getWidth() * self.ox) or self.x,
                 self.flipVertical and self.y + self.h * (self.image:getHeight() * self.oy) or self.y,
@@ -131,7 +132,7 @@ sprite = sprite or {
                 self.oy)
         end
     end,
-    drawSprites = function()
+    drawAll = function()
         local keys = tablex.keys(sprite.sprites)
         table.sort(keys)
         for _, v in pairs(keys) do
@@ -139,7 +140,7 @@ sprite = sprite or {
                 sprite.sprites[v]:draw()
             end
         end
-        animation:animate()
+        animation:animateAll()
     end,
     setImagePath = function(self, imagePath)
         self.imagePath = imagePath

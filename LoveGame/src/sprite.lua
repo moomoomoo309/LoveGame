@@ -7,6 +7,8 @@ object = object or require "object"
 
 local sprite
 sprite = sprite or {
+    type = "sprite",
+    class = sprite,
     currentId = 1,
     sprites = setmetatable({}, { __mode = "v" }), --Make sure the sprites can be garbage collected!
     spriteKeys = {},
@@ -39,6 +41,7 @@ sprite = sprite or {
             flipHorizontal = args.flipHorizontal ~= nil and args.flipHorizontal or false,
             flipVertical = args.flipVertical ~= nil and args.flipVertical or false,
             alpha = args.alpha or 255,
+            color = args.color,
             type = "sprite"
         }
         obj.class = sprite --Update the class (This does call the callback in object!)
@@ -118,6 +121,11 @@ sprite = sprite or {
         else
             img = self.image --No animation.
         end
+        local oldColor
+        if self.animating and self.animating.currentColor or self.color then
+            oldColor = { love.graphics.getColor() }
+            love.graphics.setColor(self.animating.currentColor or self.color)
+        end
         if quad then
             local _, _, quadWidth, quadHeight = quad:getViewport()
             self.sx = self.w / quadWidth --X scale
@@ -143,6 +151,9 @@ sprite = sprite or {
                 type(self.ox) == "function" and self:ox() or self.ox,
                 type(self.ox) == "function" and self:oy() or self.oy)
         end
+        if oldColor then
+            love.graphics.setColor(oldColor)
+        end
     end,
     drawAll = function()
         for _, v in pairs(sprite.spriteKeys) do
@@ -151,7 +162,7 @@ sprite = sprite or {
             end
         end
     end,
-    updateAll = function() ---Runs in love.update, not love.draw!
+    updateAll = function() --- Runs in love.update, not love.draw!
         animation:animateAll()
     end,
     setImagePath = function(self, imagePath)
@@ -161,6 +172,7 @@ sprite = sprite or {
         local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "meta" --Remove the file ending, and replace it with meta.
         local success, metaFile = pcall(function() return utils.readfile(metaPath) end) --Try to read the file...
         local cnt = 1
+        assert(success, ("Could not read file at %s. Is the path correct?"):format(imagePath))
         if success then
             if metaFile then
                 metaFile = pretty.read(metaFile)
@@ -175,8 +187,13 @@ sprite = sprite or {
                         cnt = cnt + 2
                     end
                     if type(anim.frameDurations) == "table" then
-                        assert(#anim.frameSize == 2 * #anim.frameDurations, ("Mismatched frame duration (%d) and size! (%d)"):format(#anim.frameSize, anim.frameDurations))
+                        assert((#anim.frameSize == 2 and type(anim.frameSize[1]) == "number") or
+                                #anim.frameSize == #anim.frameDurations,
+                            ("Mismatched frame duration (%d) and size! (%d)"):format(#anim.frameDurations, #anim.frameSize))
                         assert(#anim.frameDurations == #anim.frames, ("Mismatched frame duration (%d) and count! (%d)"):format(#anim.frameDurations, #anim.frames))
+                    end
+                    if type(anim.colors) == "table" then
+                        assert(#anim.colors == 1 or #anim.colors == #anim.frames, ("Mismatched frame count (%d) and colors (%d)"):format(#anim.frames, #anim.colors))
                     end
                     if #anim.frames > 0 then
                         if type(anim.frames[1]) == "table" then
@@ -194,20 +211,22 @@ sprite = sprite or {
                             self.animations[name] = animation {
                                 frames = frames,
                                 frameDurations = anim.frameDurations,
-                                self = self
+                                self = self,
+                                colors = anim.colors,
+                                sprite = sprite
                             }
                         else
                             self.animations[name] = animation {
                                 frames = { map(love.graphics.newImage, 1, unpack(anim.frames)) },
                                 frameDurations = anim.frameDurations,
-                                self = self
+                                self = self,
+                                colors = anim.colors,
+                                sprite = sprite
                             }
                         end
                     end
                 end
             end
-        else
-            error(("Could not read file at %s. Is the path correct?"):format(imagePath))
         end
     end,
     centerOx = function(self) return self.flipHorizontal and -self.w / 2 / self.sx or self.w / 2 / self.sx end,

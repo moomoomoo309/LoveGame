@@ -1,11 +1,12 @@
 local object
 object = {
     --The "object" class, so to speak. Adds callbacks.
-    type = "guiElement",
+    type = "object",
+    class = object,
     callbacks = {}, --The actual table containing the callback functions when they are added.
     addCallback = function(self, key, fct) --Adds a callback to the given property (running the function when the property changes)
-        object.callbacks[key] = object.callbacks[key] or {}
-        table.insert(object.callbacks[key], fct)
+        self.callbacks[key] = self.callbacks[key] or {}
+        self.callbacks[key][#self.callbacks[key] + 1] = fct
     end,
     triggerCallback = function(self, property)
         for k, v in pairs(self.callbacks[property]) do
@@ -16,10 +17,10 @@ object = {
     end,
     new = function(self, tbl)
         local realElement --This table stores values, the actual element is empty, because that's how callbacks are easily done in Lua.
-        realElement = setmetatable({ class = object }, { __index = object }) --Give it the methods from object
+        realElement = setmetatable({}, { __index = object }) --Give it the methods from object
         realElement.realTbl = realElement --In case access to the real table is needed, here's a pointer to it.
         local defaultMt = {
-            __newindex = function(_, key, val, ...)
+            __newindex = function(_, key, val)
                 if realElement[key] == val then return end
                 realElement[key] = val --Set the value in the real table first, then run any callbacks
                 if type(realElement.callbacks[key]) == "table" then
@@ -28,7 +29,7 @@ object = {
             end,
             __index = realElement, --Read the value from the real table, since this one is empty.
             --Get the length of the real table, since this one is empty.
-            -- Only works with Lua 5.2 or with 5.2 compat flags enabled.
+            --Only works with Lua 5.2 or with 5.2 compat flags enabled.
             __len = realElement,
         }
         local element = setmetatable({}, defaultMt) --Gives the element its metatable for callbacks

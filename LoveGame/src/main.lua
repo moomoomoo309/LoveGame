@@ -15,19 +15,18 @@ function love.load()
         w = w,
         h = h,
         ox = sprite.centerOx,
-        oy = sprite.centerOy
+        oy = sprite.centerOy,
     }
     testSprite.animations[1]:start()
 end
 
 function love.draw()
-    love.graphics.rectangle("fill", testSprite.x - testSprite.w / 2, testSprite.y - testSprite.h / 2, testSprite.w, testSprite.h)
     sprite.drawAll()
 end
 
 function love.update(dt)
     sprite.updateAll()
-    --    testSprite.rotation = (testSprite.rotation + 1) % 360
+    testSprite.rotation = (testSprite.rotation + 1) % 360
 end
 
 function love.mousemoved(x, y)

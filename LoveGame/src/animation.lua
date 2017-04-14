@@ -7,11 +7,13 @@ animation = animation or {
             currentFrame = 1,
             lastTime = 0,
             remainingTime = 0,
-            sprite = nil,
+            sprite = args.sprite,
             animation = self,
             start = self.start,
             stop = self.stop,
-            paused = true
+            colors = args.colors,
+            paused = true,
+            currentColor = false
         }
         return setmetatable(obj, { __index = animation })
     end,
@@ -69,6 +71,7 @@ animation = animation or {
                 self.currentFrame = self.currentFrame == #self.frames and 1 or self.currentFrame + 1 --Next frame!
             end
         end
+        self.currentColor = self.colors[self.currentFrame]
         self.lastTime = love.timer.getTime() --Update the time of the last frame
     end,
     animateAll = function()

@@ -21,14 +21,15 @@ function love.load()
 end
 
 function love.draw()
-    love.graphics.rectangle("fill",testSprite.x-testSprite.w/2,testSprite.y-testSprite.h/2,testSprite.w,testSprite.h)
+    love.graphics.rectangle("fill", testSprite.x - testSprite.w / 2, testSprite.y - testSprite.h / 2, testSprite.w, testSprite.h)
     sprite.drawAll()
 end
 
 function love.update(dt)
-    testSprite.rotation = (testSprite.rotation + 1/dt/100) % 360
+    sprite.updateAll()
+    --    testSprite.rotation = (testSprite.rotation + 1) % 360
 end
 
 function love.mousemoved(x, y)
-    testSprite.x, testSprite.y = x - testSprite.w/2, y-testSprite.h/2
+    testSprite.x, testSprite.y = x - testSprite.w / 2, y - testSprite.h / 2
 end

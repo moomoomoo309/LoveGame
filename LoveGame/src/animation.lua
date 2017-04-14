@@ -10,7 +10,8 @@ animation = animation or {
             sprite = nil,
             animation = self,
             start = self.start,
-            stop = self.stop
+            stop = self.stop,
+            paused = true
         }
         return setmetatable(obj, { __index = animation })
     end,
@@ -18,13 +19,25 @@ animation = animation or {
         self.animation.runningAnimations[self.sprite] = self
         self.lastTime = love.timer.getTime()
         self.sprite.animating = self
+        self.paused = false
     end,
     stop = function(self)
         self.animation.runningAnimations[self.sprite] = nil
         self.sprite.animating = false
+        self.paused = true
+    end,
+    pause = function(self) --- Pauses the animation. Note, a paused animation will use the current frame of the animation,
+    --- while a sprite not animating will use the sprite's image.
+        self.paused = true
+    end,
+    resume = function(self) --- Resumes the animation.
+        self.paused = false
     end,
     runningAnimations = {},
     animate = function(self)
+        if self.paused then --If it's paused, just return. Exists because paused animations will use the current frame,
+            return --but if the animation is stopped, the sprite will use its image to draw.
+        end
         if not self.sprite.visible then
             animation.runningAnimations[self.sprite] = nil
         end
@@ -64,6 +77,7 @@ animation = animation or {
         end
     end
 }
+animation.unpause = animation.resume --Alias
 
 setmetatable(animation, { __call = animation.new })
 

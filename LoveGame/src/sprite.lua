@@ -3,12 +3,12 @@ animation = animation or require "animation"
 utils = utils or require "pl.utils"
 pretty = pretty or require "pl.pretty"
 map = map or require "map"
-object = object or require"object"
+object = object or require "object"
 
 local sprite
 sprite = sprite or {
     currentId = 1,
-    sprites = setmetatable({}, { __mode = "v" }),
+    sprites = setmetatable({}, { __mode = "v" }), --Make sure the sprites can be garbage collected!
     spriteKeys = {},
     batches = {},
     Id = function() --- Returns the next available numeric id for a sprite.
@@ -36,25 +36,36 @@ sprite = sprite or {
             ox = args.ox or 0,
             oy = args.oy or 0,
             rotation = args.rotation or 0,
-            flipHorizontal = args.flipHorizontal or false,
-            flipVertical = args.flipVertical or false,
+            flipHorizontal = args.flipHorizontal ~= nil and args.flipHorizontal or false,
+            flipVertical = args.flipVertical ~= nil and args.flipVertical or false,
             alpha = args.alpha or 255,
             type = "sprite"
         }
+        obj.class = sprite --Update the class (This does call the callback in object!)
+        obj.sprite = sprite --Give a reference to sprite, which may be needed for children.
         obj.setImagePath = sprite.setImagePath
         if not obj.image then
             obj:setImagePath(obj.imagePath)
         end
-        obj.ox = args.ox or 1 / obj.image:getWidth()
-        obj.oy = args.oy or 1 / obj.image:getHeight()
-        obj.sprite = sprite
         for _, animation in pairs(obj.animations) do
             animation.sprite = obj
         end
+
+        --Insert the sprite into sprite.sprites and sprite.spriteKeys.
+        --sprite.spriteKeys remains sorted so that draw order is based on a sprite's Id.
         sprite.sprites[obj.Id] = obj
-        sprite.spriteKeys[#sprite.spriteKeys + 1] = obj.Id
-        table.sort(sprite.spriteKeys)
-        obj.class = sprite
+        local inserted = false
+        for k, v in pairs(sprite.spriteKeys) do
+            if v <= obj.Id then
+                inserted = true
+                table.insert(sprite.spriteKeys, k)
+                break
+            end
+        end
+        if not inserted then
+            sprite.spriteKeys[#sprite.spriteKeys + 1] = obj.Id
+        end
+
         return obj
     end,
     copy = function(self, that, args)
@@ -70,16 +81,16 @@ sprite = sprite or {
                     if not batches[sprite.imagePath] then
                         love.graphics.newSpriteBatch(sprite.image)
                     end
-                    that[k] = batches[sprite.imagePath]
+                    this[k] = batches[sprite.imagePath]
                 else
-                    that[k] = v
+                    this[k] = v
                 end
             end
             if type(v) == "table" then --Make copies of tables unless they should be reused.
                 if table.find(reusableFields, k) then
-                    that[k] = v --Reuse certain tables
+                    this[k] = v --Reuse certain tables
                 else
-                    that[k] = tablex.copy(v) --Make new copies of the rest
+                    this[k] = tablex.copy(v) --Make new copies of the rest
                 end
             end
         end
@@ -87,10 +98,9 @@ sprite = sprite or {
         for k, v in pairs(args) do
             if k ~= "id" then --Do not ever create copies with the same Id.
                 this[k] = v
-            else
-                this[k] = sprite.Id()
             end
         end
+        this.id = sprite.Id()
         return this
     end,
     draw = function(self)
@@ -119,37 +129,35 @@ sprite = sprite or {
                 math.rad(self.rotation),
                 self.flipHorizontal and -self.sx or self.sx,
                 self.flipVertical and -self.sy or self.sy,
-                type(self.ox)=="function" and self:ox() or self.ox,
-                type(self.ox)=="function" and self:oy() or self.oy)
+                type(self.ox) == "function" and self:ox() or self.ox,
+                type(self.oy) == "function" and self:oy() or self.oy)
         else
-            local sx = self.w / img:getWidth() --X scale
-            local sy = self.h / img:getHeight() --Y scale
+            self.sx = self.w / img:getWidth() --X scale
+            self.sy = self.h / img:getHeight() --Y scale
             love.graphics.draw(img,
                 self.flipHorizontal and self.x + self.image:getWidth() or self.x,
                 self.flipVertical and self.y + self.image:getHeight() or self.y,
                 math.rad(self.rotation),
-                self.flipHorizontal and -sx or sx,
-                self.flipVertical and -sy or sy,
-                type(self.ox)=="function" and self:ox() or self.ox,
-                type(self.ox)=="function" and self:oy() or self.oy)
+                self.flipHorizontal and -self.sx or self.sx,
+                self.flipVertical and -self.sy or self.sy,
+                type(self.ox) == "function" and self:ox() or self.ox,
+                type(self.ox) == "function" and self:oy() or self.oy)
         end
     end,
     drawAll = function()
-        local keys = tablex.keys(sprite.sprites)
-        table.sort(keys)
-        for _, v in pairs(keys) do
+        for _, v in pairs(sprite.spriteKeys) do
             if sprite.sprites[v].visible then
                 sprite.sprites[v]:draw()
             end
         end
+    end,
+    updateAll = function() ---Runs in love.update, not love.draw!
         animation:animateAll()
     end,
     setImagePath = function(self, imagePath)
         self.imagePath = imagePath
         self.image = love.graphics.newImage(self.imagePath)
-        if not self.imagePath then
-            error("No imagePath found for sprite!")
-        end
+        assert(self.imagePath, "No imagePath found for sprite!")
         local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "meta" --Remove the file ending, and replace it with meta.
         local success, metaFile = pcall(function() return utils.readfile(metaPath) end) --Try to read the file...
         local cnt = 1
@@ -190,7 +198,7 @@ sprite = sprite or {
                             }
                         else
                             self.animations[name] = animation {
-                                frames = {map(love.graphics.newImage, 1, unpack(anim.frames))},
+                                frames = { map(love.graphics.newImage, 1, unpack(anim.frames)) },
                                 frameDurations = anim.frameDurations,
                                 self = self
                             }
@@ -202,8 +210,8 @@ sprite = sprite or {
             error(("Could not read file at %s. Is the path correct?"):format(imagePath))
         end
     end,
-    centerOx = function(self) return self.w / 2 / self.sx end,
-    centerOy = function(self) return self.h / 2 / self.sy end
+    centerOx = function(self) return self.flipHorizontal and -self.w / 2 / self.sx or self.w / 2 / self.sx end,
+    centerOy = function(self) return self.flipVertical and -self.h / 2 / self.sy or self.h / 2 / self.sy end
 }
 
 return setmetatable(sprite, { __call = sprite.new, __index = object })

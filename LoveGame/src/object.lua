@@ -8,34 +8,38 @@ object = {
         table.insert(object.callbacks[key], fct)
     end,
     triggerCallback = function(self, property)
-        local i = 0
-        for _, v in pairs(self.callbacks[property]) do
-            v(self, self[property])
+        for k, v in pairs(self.callbacks[property]) do
+            if not v(self, self[property]) then --If the callback returns false, remove it.
+                table.remove(self.callbacks[property], k)
+            end
         end
     end,
     new = function(self, tbl)
         local realElement --This table stores values, the actual element is empty, because that's how callbacks are easily done in Lua.
-        realElement = {}
-        realElement.class = object
-        realElement.realTbl = setmetatable(realElement, { __index = object })
-        local element = setmetatable({}, --Gives the element its metatable for callbacks
-            {
-                __newindex = function(_, key, val, ...)
-                    if realElement[key] == val then return end
-                    realElement[key] = val --Set the value in the real table first, then run any callbacks
-                    if type(realElement.callbacks[key]) == "table" then
-                        realElement.triggerCallback(realElement, key)
-                    end
-                end,
-                __index = realElement, --Read the value from the real table, since this one is empty.
-                __len = realElement, --Get the length of the real table, since this one is empty.
-            })
+        realElement = setmetatable({ class = object }, { __index = object }) --Give it the methods from object
+        realElement.realTbl = realElement --In case access to the real table is needed, here's a pointer to it.
+        local defaultMt = {
+            __newindex = function(_, key, val, ...)
+                if realElement[key] == val then return end
+                realElement[key] = val --Set the value in the real table first, then run any callbacks
+                if type(realElement.callbacks[key]) == "table" then
+                    realElement.triggerCallback(realElement, key)
+                end
+            end,
+            __index = realElement, --Read the value from the real table, since this one is empty.
+            --Get the length of the real table, since this one is empty.
+            -- Only works with Lua 5.2 or with 5.2 compat flags enabled.
+            __len = realElement,
+        }
+        local element = setmetatable({}, defaultMt) --Gives the element its metatable for callbacks
         element:addCallback("class",
             function(self, class)
-                if not getmetatable(self) then
-                    setmetatable(self, { __call = class.new })
+                if not getmetatable(self) then --Add the metatable if it does not exist.
+                    setmetatable(self, defaultMt)
                 end
-                getmetatable(self).__index = class
+                local mt = getmetatable(self)
+                mt.__index = class --Update the __index so it grabs properties from its class.
+                mt.__call = class.new --Update the constructor so it can be created with classname().
             end)
         for k, v in pairs(tbl) do --Set all the specified properties of the element in the constructor to the user set ones
             realElement[k] = v

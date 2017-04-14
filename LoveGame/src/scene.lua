@@ -32,7 +32,7 @@ scene = {
     scenes = {},
     currentScenes = {},
     printText = function(self, text, reset, color) --- Print the given text on the screen, moving the camera down when the text gets off screen.
-        --- Make reset true to move the text back to the top of the screen.
+    --- Make reset true to move the text back to the top of the screen.
         if reset then
             i = 0
             yOffset = 0
@@ -50,6 +50,7 @@ scene = {
     new = function(self, name) --- Creates a new scene.
         name = name == nil and self or name
         scene.scenes[name] = scene.scenes[name] or { class = scene, name = name }
+        return setmetatable(scene.scenes[name], { __index = scene })
     end,
     add = function(self, name, sceneName, additionalScene) --- Adds a sprite to the given scene.
         if not additionalScene then
@@ -73,7 +74,7 @@ scene = {
         end
     end,
     show = function(self, sceneName) --- Shows the scene with the given name, or self if called with a scene.
-        scene.currentScenes[#scene.currentScenes + 1] = sceneName or self
+        scene.currentScenes[#scene.currentScenes + 1] = sceneName and scene.scenes[sceneName] or self
         for i = 1, #scene.currentScenes do
             for k, v in pairs(scene.scenes[scene.currentScenes[i].name]) do
                 if type(v) == "table" and k ~= "class" then
@@ -90,7 +91,8 @@ scene = {
     end,
     isVisible = function(self) --- Returns if self is visible.
         return scene.scenes[self.name] and ({ next(scene.scenes[self.name]) })[2].visible
-        --The thing after the and gets the first sprite in the scene and checks if it's visible. The [2] is because next returns the key and the value.
+        --The right side of the "and" gets the first sprite in the scene and checks if it's visible.
+        --The [2] is because next returns the key and the value.
     end
 }
 

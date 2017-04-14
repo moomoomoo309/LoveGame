@@ -3,6 +3,7 @@ animation = animation or require "animation"
 utils = utils or require "pl.utils"
 pretty = pretty or require "pl.pretty"
 map = map or require "map"
+object = object or require"object"
 
 local sprite
 sprite = sprite or {
@@ -20,9 +21,9 @@ sprite = sprite or {
         if not args and self then --Allows you to call sprite.new or sprite:new
             args = self
         end
-        local obj = {
+        local obj = object {
             Id = args.Id or self:Id(),
-            imagePath = args.imagePath or {},
+            imagePath = args.imagePath or false,
             image = args.image,
             animations = args.animations or {},
             animating = false,
@@ -44,8 +45,8 @@ sprite = sprite or {
         if not obj.image then
             obj:setImagePath(obj.imagePath)
         end
-        obj.ox = 1 / obj.image:getWidth()
-        obj.oy = 1 / obj.image:getHeight()
+        obj.ox = args.ox or 1 / obj.image:getWidth()
+        obj.oy = args.oy or 1 / obj.image:getHeight()
         obj.sprite = sprite
         for _, animation in pairs(obj.animations) do
             animation.sprite = obj
@@ -53,7 +54,8 @@ sprite = sprite or {
         sprite.sprites[obj.Id] = obj
         sprite.spriteKeys[#sprite.spriteKeys + 1] = obj.Id
         table.sort(sprite.spriteKeys)
-        return setmetatable(obj, { __index = sprite })
+        obj.class = sprite
+        return obj
     end,
     copy = function(self, that, args)
         if not args and self and that then --Allows you to call sprite.copy or sprite:copy
@@ -108,28 +110,28 @@ sprite = sprite or {
         end
         if quad then
             local _, _, quadWidth, quadHeight = quad:getViewport()
-            local sx = self.w / quadWidth --X scale
-            local sy = self.h / quadHeight --Y scale
+            self.sx = self.w / quadWidth --X scale
+            self.sy = self.h / quadHeight --Y scale
             love.graphics.draw(img,
                 quad,
-                self.flipHorizontal and self.x + self.w - sx * self.ox or self.x,
-                self.flipVertical and self.y + self.h - sy * self.oy or self.y + sy * self.oy,
+                self.flipHorizontal and self.x + self.w - self.sx / self.w or self.x,
+                self.flipVertical and self.y + self.h - self.sy / self.h or self.y + self.sy / self.h,
                 math.rad(self.rotation),
-                self.flipHorizontal and -sx or sx,
-                self.flipVertical and -sy or sy,
-                self.ox,
-                self.oy)
+                self.flipHorizontal and -self.sx or self.sx,
+                self.flipVertical and -self.sy or self.sy,
+                type(self.ox)=="function" and self:ox() or self.ox,
+                type(self.ox)=="function" and self:oy() or self.oy)
         else
             local sx = self.w / img:getWidth() --X scale
             local sy = self.h / img:getHeight() --Y scale
             love.graphics.draw(img,
-                self.flipHorizontal and self.x + self.w * (self.image:getWidth() * self.ox) or self.x,
-                self.flipVertical and self.y + self.h * (self.image:getHeight() * self.oy) or self.y,
+                self.flipHorizontal and self.x + self.image:getWidth() or self.x,
+                self.flipVertical and self.y + self.image:getHeight() or self.y,
                 math.rad(self.rotation),
                 self.flipHorizontal and -sx or sx,
                 self.flipVertical and -sy or sy,
-                self.ox,
-                self.oy)
+                type(self.ox)=="function" and self:ox() or self.ox,
+                type(self.ox)=="function" and self:oy() or self.oy)
         end
     end,
     drawAll = function()
@@ -145,6 +147,9 @@ sprite = sprite or {
     setImagePath = function(self, imagePath)
         self.imagePath = imagePath
         self.image = love.graphics.newImage(self.imagePath)
+        if not self.imagePath then
+            error("No imagePath found for sprite!")
+        end
         local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "meta" --Remove the file ending, and replace it with meta.
         local success, metaFile = pcall(function() return utils.readfile(metaPath) end) --Try to read the file...
         local cnt = 1
@@ -153,13 +158,16 @@ sprite = sprite or {
                 metaFile = pretty.read(metaFile)
                 for name, anim in pairs(metaFile) do
                     local frameSize
+                    assert(type(anim.frameSize) == "table", ("frameSize must be a table, is a %s."):format(type(anim.frameSize)))
+                    assert(#anim.frameSize % 2 == 0, ("The frameSize (%d) must be a multiple of two!"):format(#anim.frameSize))
                     if #anim.frameSize == 2 then
                         frameSize = anim.frameSize
                     else
-                        frameSize = anim.frameSize[cnt]
-                        cnt = cnt + 1
+                        frameSize = { anim.frameSize[cnt], anim.frameSize[cnt + 1] }
+                        cnt = cnt + 2
                     end
                     if type(anim.frameDurations) == "table" then
+                        assert(#anim.frameSize == 2 * #anim.frameDurations, ("Mismatched frame duration (%d) and size! (%d)"):format(#anim.frameSize, anim.frameDurations))
                         assert(#anim.frameDurations == #anim.frames, ("Mismatched frame duration (%d) and count! (%d)"):format(#anim.frameDurations, #anim.frames))
                     end
                     if #anim.frames > 0 then
@@ -182,7 +190,7 @@ sprite = sprite or {
                             }
                         else
                             self.animations[name] = animation {
-                                frames = map(love.graphics.newImage, 1, unpack(anim.frames)),
+                                frames = {map(love.graphics.newImage, 1, unpack(anim.frames))},
                                 frameDurations = anim.frameDurations,
                                 self = self
                             }
@@ -193,7 +201,9 @@ sprite = sprite or {
         else
             error(("Could not read file at %s. Is the path correct?"):format(imagePath))
         end
-    end
+    end,
+    centerOx = function(self) return self.w / 2 / self.sx end,
+    centerOy = function(self) return self.h / 2 / self.sy end
 }
 
-return setmetatable(sprite, { __call = sprite.new })
+return setmetatable(sprite, { __call = sprite.new, __index = object })

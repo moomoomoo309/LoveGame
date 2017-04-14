@@ -1,7 +1,7 @@
-#Instructions for setting up LoveGame Repo:
+# Instructions for setting up LoveGame Repo:
 
 
-##Before setting up:
+## Before setting up:
 * Install git, using any of the following:
   * [Git for Windows](https://git-for-windows.github.io/) (has a bunch of extra stuff, like a GUI and full BASH shell)
   * [GitHub Desktop](https://desktop.github.com/) (has even more extra stuff, with better github integration)
@@ -12,7 +12,7 @@
 * Install [Love2D](https://love2d.org/).
 
 ---
-##Sublime Text 2/3:
+## Sublime Text 2/3:
   * Install Package Control if it's not already installed. (ctrl+shift+p, type package, if it shows up, you're good!)
 	
   * Install the following packages:
@@ -54,24 +54,25 @@
      * Go to [the repo](https://github.com/moomoomoo309/LoveGame) and you should see your commit.  
 
 ---
-##IntelliJ-based IDEs (PyCharm, IntelliJ, etc.):
+## IntelliJ-based IDEs (PyCharm, IntelliJ, etc.):
   * Go to help->find action, and go to Plugins...
   * Click on "Browse additional repositories"
   * Search for and install the following:
     * Floobits
     * Lua
-    * Hyperlinks (Optional, but useful)
+  * Optionally, also install the following:
+    * CodeGlance
+    * AceJump (Read up on what it does!)
+    * Hyperlinks
   * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame
   * To set up the build system:
      * Go to file->settings, and search for external tools.
      * Add a new tool, and set the following:
-       * Program: path to love.exe (Don't type that directly, put the actual path!)
-       * Parameters: $SourcePath$
+       * Program: path to love.exe with quotes around it (Don't type that directly, put the actual path!)
+       * Parameters: "$SourcePath$"
        * Add a shortcut to it (I used Ctrl + B)
-     
-  
-Notes on IntelliJ for Love2D Development:
-* The auto completion for Love2D doesn't work once you put a period. If you want love.math.something, type "loma" and it'll pop the suggestions up. 
-		
+
+##### Notes on IntelliJ for Love2D Development:
+* Use the shortcut added earlier to run the program!

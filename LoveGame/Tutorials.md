@@ -1,8 +1,5 @@
 # Specific things: (Tutorials on doing one thing in particular)
 
-Animating Sprites
-http://www.buildandgun.com/2014/07/animated-sprites-in-love2d.html
-
 STI implementation
 http://lua.space/gamedev/using-tiled-maps-in-love
 

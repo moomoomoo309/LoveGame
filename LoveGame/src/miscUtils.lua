@@ -1,9 +1,9 @@
-local all = function(...) --Returns the last true value, or false if any value is false.
-    return select("#", ...) == 1 and (...) or ((...) and all(select(2, ...)))
+local all = function(...) --Returns if any value is false.
+    return (select("#", ...) == 1 and (...) or ((...) and all(select(2, ...)))) and true or false
 end
 
-local any = function(...) --Returns the first true value, or the last false value.
-    return (...) or any(select(2, ...))
+local any = function(...) --Returns if any value is true.
+    return ((...) or any(select(2, ...))) and true or false
 end
 
 function math.round(num) --Rounds a floating point number to the nearest integer.

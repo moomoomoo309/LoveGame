@@ -24,7 +24,7 @@ sprite = sprite or {
             args = self
         end
         local obj = object {
-            Id = args.Id or self:Id(),
+            Id = (args.Id and not sprite.sprites[args.Id]) and args.Id or sprite.Id(),
             imagePath = args.imagePath or false,
             image = args.image,
             animations = args.animations or {},
@@ -42,7 +42,10 @@ sprite = sprite or {
             flipVertical = args.flipVertical ~= nil and args.flipVertical or false,
             alpha = args.alpha or 255,
             color = args.color,
-            type = "sprite"
+            type = "sprite",
+            filterMin = args.filterMin or "nearest",
+            filterMax = args.filterMax or "nearest",
+            anisotropy = args.anisotropy or 0
         }
         obj.class = sprite --Update the class (This does call the callback in object!)
         obj.sprite = sprite --Give a reference to sprite, which may be needed for children.
@@ -50,25 +53,24 @@ sprite = sprite or {
         if not obj.image then
             obj:setImagePath(obj.imagePath)
         end
+        obj.image:setFilter(obj.filterMin,obj.filterMax,obj.anisotropy)
         for _, animation in pairs(obj.animations) do
             animation.sprite = obj
         end
-
         --Insert the sprite into sprite.sprites and sprite.spriteKeys.
         --sprite.spriteKeys remains sorted so that draw order is based on a sprite's Id.
         sprite.sprites[obj.Id] = obj
         local inserted = false
-        for k, v in pairs(sprite.spriteKeys) do
-            if v <= obj.Id then
+        for k in ipairs(sprite.spriteKeys) do
+            if k >= obj.Id then
                 inserted = true
-                table.insert(sprite.spriteKeys, k)
+                table.insert(sprite.spriteKeys, k, obj.Id)
                 break
             end
         end
         if not inserted then
             sprite.spriteKeys[#sprite.spriteKeys + 1] = obj.Id
         end
-
         return obj
     end,
     copy = function(self, that, args)
@@ -156,7 +158,8 @@ sprite = sprite or {
         end
     end,
     drawAll = function()
-        for _, v in pairs(sprite.spriteKeys) do
+        for i=#sprite.spriteKeys,1,-1 do
+            local v = sprite.spriteKeys[i]
             if sprite.sprites[v].visible then
                 sprite.sprites[v]:draw()
             end
@@ -169,13 +172,13 @@ sprite = sprite or {
         self.imagePath = imagePath
         self.image = love.graphics.newImage(self.imagePath)
         assert(self.imagePath, "No imagePath found for sprite!")
-        local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "meta" --Remove the file ending, and replace it with meta.
-        local success, metaFile = pcall(function() return utils.readfile(metaPath) end) --Try to read the file...
+        local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "anim" --Remove the file ending, and replace it with anim.
+        local success, metaFile = pcall(function() return dofile(metaPath) end) --Try to read the file...
         local cnt = 1
-        assert(success, ("Could not read file at %s. Is the path correct?"):format(imagePath))
+        assert(success, ("Could not execute file at %s. Is the path correct, or is the file malformed?"):format(imagePath))
         if success then
+            assert(type(metaFile) == "table", ("Expected table, found %s."):format(type(metaFile)))
             if metaFile then
-                metaFile = pretty.read(metaFile)
                 for name, anim in pairs(metaFile) do
                     local frameSize
                     assert(type(anim.frameSize) == "table", ("frameSize must be a table, is a %s."):format(type(anim.frameSize)))
@@ -195,9 +198,24 @@ sprite = sprite or {
                     if type(anim.colors) == "table" then
                         assert(#anim.colors == 1 or #anim.colors == #anim.frames, ("Mismatched frame count (%d) and colors (%d)"):format(#anim.frames, #anim.colors))
                     end
-                    if #anim.frames > 0 then
-                        if type(anim.frames[1]) == "table" then
-                            local frames = {}
+                    if type(anim.frames) == "string" or #anim.frames > 0 then
+                        local frames = {}
+                        do --Used so the if statement on the next line can skip the for loop.
+                            if type(anim.frames) == "string" then
+                                frames = { love.graphics.newImage(anim.frames) }
+                                break
+                            end
+                            if type(anim.frames) == "table" and #anim.frames == 2 and type(anim.frames[1]) == "number" and type(anim.frames[2]) == "number" then --It's in the format of {x,y} for a quad.
+                                frames = {
+                                    love.graphics.newQuad(map(tonumber, 1,
+                                        anim.frames[1],
+                                        anim.frames[2],
+                                        frameSize[1],
+                                        frameSize[2],
+                                        self.image:getDimensions()))
+                                }
+                                break
+                            end
                             for _, frame in pairs(anim.frames) do
                                 if tonumber(frame[1]) then
                                     frames[#frames + 1] = love.graphics.newQuad(map(tonumber, 1,
@@ -206,24 +224,18 @@ sprite = sprite or {
                                         frameSize[1],
                                         frameSize[2],
                                         self.image:getDimensions()))
+                                elseif type(frame) == "string" then
+                                    frames[#frames + 1] = love.graphics.newImage(frame)
                                 end
                             end
-                            self.animations[name] = animation {
-                                frames = frames,
-                                frameDurations = anim.frameDurations,
-                                self = self,
-                                colors = anim.colors,
-                                sprite = sprite
-                            }
-                        else
-                            self.animations[name] = animation {
-                                frames = { map(love.graphics.newImage, 1, unpack(anim.frames)) },
-                                frameDurations = anim.frameDurations,
-                                self = self,
-                                colors = anim.colors,
-                                sprite = sprite
-                            }
                         end
+                        self.animations[name] = animation {
+                            frames = frames,
+                            frameDurations = anim.frameDurations,
+                            self = self,
+                            colors = anim.colors,
+                            sprite = sprite
+                        }
                     end
                 end
             end

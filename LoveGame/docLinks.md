@@ -2,6 +2,8 @@ https://love2d.org/forums/viewtopic.php?f=5&t=76983 - Simple Tiled Implementatio
 http://karai17.github.io/Simple-Tiled-Implementation/ - Docs
 http://mapeditor.org/ - Tiled Map Editor
 
+https://github.com/kikito/love-loader - Asynchronous image loading
+
 https://love2d.org/forums/viewtopic.php?f=5&t=79223 - bump.lua (Collision Detection)
 https://github.com/kikito/bump.lua - Docs (on README.md)
 

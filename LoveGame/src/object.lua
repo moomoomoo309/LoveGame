@@ -3,21 +3,21 @@ object = {
     --The "object" class, so to speak. Adds callbacks.
     type = "object",
     class = object,
-    callbacks = {}, --The actual table containing the callback functions when they are added.
     addCallback = function(self, key, fct) --Adds a callback to the given property (running the function when the property changes)
         self.callbacks[key] = self.callbacks[key] or {}
         self.callbacks[key][#self.callbacks[key] + 1] = fct
     end,
     triggerCallback = function(self, property)
         for k, v in pairs(self.callbacks[property]) do
-            if not v(self, self[property]) then --If the callback returns false, remove it.
+            if v(self, self[property]) == false then --If the callback returns false, remove it.
                 table.remove(self.callbacks[property], k)
             end
         end
     end,
     new = function(self, tbl)
         local realElement --This table stores values, the actual element is empty, because that's how callbacks are easily done in Lua.
-        realElement = setmetatable({}, { __index = object }) --Give it the methods from object
+        realElement = { callbacks = {} } --The table storing all of the callbacks for the object.
+        realElement = setmetatable(realElement, { __index = object }) --Give it the methods from object
         realElement.realTbl = realElement --In case access to the real table is needed, here's a pointer to it.
         local defaultMt = {
             __newindex = function(_, key, val)

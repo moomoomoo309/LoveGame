@@ -1,0 +1,14 @@
+local tbl = {
+    idle = {
+        frameSize={17,32},
+        frames = {
+            { 0, 0 },
+            { 18, 0 },
+            { 36, 0 },
+            { 54, 0 }
+        },
+        frameDurations = 1/5
+    }
+}
+
+return tbl

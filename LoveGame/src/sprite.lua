@@ -30,7 +30,6 @@ sprite = sprite or {
             animations = args.animations or {},
             animating = false,
             visible = args.visible == nil and true or args.visible,
-            lastTime = 0,
             x = args.x or 0,
             y = args.y or 0,
             w = args.w or 0,
@@ -42,19 +41,19 @@ sprite = sprite or {
             flipVertical = args.flipVertical ~= nil and args.flipVertical or false,
             alpha = args.alpha or 255,
             color = args.color,
-            type = "sprite",
             filterMin = args.filterMin or "nearest",
             filterMax = args.filterMax or "nearest",
-            anisotropy = args.anisotropy or 0
+            anisotropy = args.anisotropy or 0,
+            animPath = args.animPath or (args.imagePath and args.imagePath:find(".", nil, true) and args.imagePath:sub(1, -args.imagePath:reverse():find(".", nil, true)) .. "anim") or false
         }
         obj.class = sprite --Update the class (This does call the callback in object!)
         obj.sprite = sprite --Give a reference to sprite, which may be needed for children.
-        obj.setImagePath = sprite.setImagePath
-        if not obj.image then
-            obj:setImagePath(obj.imagePath)
+        if obj.imagePath then
+            obj:setImagePath(obj.imagePath) --When the class was changed, so was the metatable, making its __index point to sprite.
         end
-        obj.image:setFilter(obj.filterMin,obj.filterMax,obj.anisotropy)
+        obj.image:setFilter(obj.filterMin, obj.filterMax, obj.anisotropy) --If for some reason, nearest isn't wanted.
         for _, animation in pairs(obj.animations) do
+            --Give each animation a pointer to its sprite.
             animation.sprite = obj
         end
         --Insert the sprite into sprite.sprites and sprite.spriteKeys.
@@ -63,6 +62,7 @@ sprite = sprite or {
         local inserted = false
         for k in ipairs(sprite.spriteKeys) do
             if k >= obj.Id then
+                --Yay, insertion sort!
                 inserted = true
                 table.insert(sprite.spriteKeys, k, obj.Id)
                 break
@@ -105,7 +105,7 @@ sprite = sprite or {
                 this[k] = v
             end
         end
-        this.id = sprite.Id()
+        this.Id = sprite.Id()
         return this
     end,
     draw = function(self)
@@ -158,7 +158,7 @@ sprite = sprite or {
         end
     end,
     drawAll = function()
-        for i=#sprite.spriteKeys,1,-1 do
+        for i = #sprite.spriteKeys, 1, -1 do
             local v = sprite.spriteKeys[i]
             if sprite.sprites[v].visible then
                 sprite.sprites[v]:draw()
@@ -170,24 +170,35 @@ sprite = sprite or {
     end,
     setImagePath = function(self, imagePath)
         self.imagePath = imagePath
-        self.image = love.graphics.newImage(self.imagePath)
+        local spriteSheet = love.graphics.newImage(self.imagePath)
+        spriteSheet:setFilter(self.filterMin, self.filterMax, self.anisotropy) --If for some reason, nearest isn't wanted.
+        self.image = self.image or spriteSheet --If it was user-overridden, keep it!
         assert(self.imagePath, "No imagePath found for sprite!")
-        local metaPath = self.imagePath:sub(0, -self.imagePath:reverse():find(".", nil, true)) .. "anim" --Remove the file ending, and replace it with anim.
-        local success, metaFile = pcall(function() return dofile(metaPath) end) --Try to read the file...
-        local cnt = 1
+        local success, metaFile = false, nil
+        if self.animPath then
+            success, metaFile = pcall(function()
+                return dofile(self.animPath)
+            end) --Try to read the file...
+        end
         assert(success, ("Could not execute file at %s. Is the path correct, or is the file malformed?"):format(imagePath))
         if success then
             assert(type(metaFile) == "table", ("Expected table, found %s."):format(type(metaFile)))
             if metaFile then
                 for name, anim in pairs(metaFile) do
-                    local frameSize
+                    local frameSize = {}
                     assert(type(anim.frameSize) == "table", ("frameSize must be a table, is a %s."):format(type(anim.frameSize)))
-                    assert(#anim.frameSize % 2 == 0, ("The frameSize (%d) must be a multiple of two!"):format(#anim.frameSize))
-                    if #anim.frameSize == 2 then
+                    if type(anim.frameSize[1]) == "table" then
+                        for i = 1, #anim.frameSize do
+                            assert(#anim.frameSize[i] % 2 == 0, ("The frameSize for frame %d (%d) must be a multiple of two!"):format(i, #anim.frameSize[i]))
+                        end
                         frameSize = anim.frameSize
-                    else
-                        frameSize = { anim.frameSize[cnt], anim.frameSize[cnt + 1] }
-                        cnt = cnt + 2
+                    elseif #anim.frameSize % 2 == 0 then
+                        assert(#anim.frameSize % 2 == 0, ("The frameSize (%d) must be a multiple of two!"):format(#anim.frameSize))
+                        for i = 1, #anim.frameSize, 2 do
+                            assert(type(anim.frameSize[i]) == "number", ("frameSize[%d] must be a number, is a %s."):format(i, type(anim.frameSize[i])))
+                            assert(type(anim.frameSize[i + 1]) == "number", ("frameSize[%d] must be a number, is a %s."):format(i + 1, type(anim.frameSize[i + 1])))
+                            frameSize[(i + 1) / 2] = { anim.frameSize[i], anim.frameSize[i + 1] }
+                        end
                     end
                     if type(anim.frameDurations) == "table" then
                         assert((#anim.frameSize == 2 and type(anim.frameSize[1]) == "number") or
@@ -200,30 +211,28 @@ sprite = sprite or {
                     end
                     if type(anim.frames) == "string" or #anim.frames > 0 then
                         local frames = {}
-                        do --Used so the if statement on the next line can skip the for loop.
-                            if type(anim.frames) == "string" then
-                                frames = { love.graphics.newImage(anim.frames) }
-                                break
-                            end
-                            if type(anim.frames) == "table" and #anim.frames == 2 and type(anim.frames[1]) == "number" and type(anim.frames[2]) == "number" then --It's in the format of {x,y} for a quad.
-                                frames = {
-                                    love.graphics.newQuad(map(tonumber, 1,
-                                        anim.frames[1],
-                                        anim.frames[2],
-                                        frameSize[1],
-                                        frameSize[2],
-                                        self.image:getDimensions()))
-                                }
-                                break
-                            end
-                            for _, frame in pairs(anim.frames) do
+                        assert(type(anim.frames) == "table" or type(anim.frames) == "string", ("Frames must be a table or string, is a %s"):format(type(anim.frames)))
+                        if type(anim.frames) == "string" then
+                            frames = { love.graphics.newImage(anim.frames) }
+                        elseif type(anim.frames) == "table" and #anim.frames == 2 and type(anim.frames[1]) == "number" and type(anim.frames[2]) == "number" then
+                            --It's in the format of {x,y} for a quad.
+                            frames = {
+                                love.graphics.newQuad(map(tonumber, 1,
+                                anim.frames[1],
+                                anim.frames[2],
+                                frameSize[1][1],
+                                frameSize[1][2],
+                                spriteSheet:getDimensions()))
+                            }
+                        elseif type(anim.frames) == "table" then
+                            for k, frame in pairs(anim.frames) do
                                 if tonumber(frame[1]) then
                                     frames[#frames + 1] = love.graphics.newQuad(map(tonumber, 1,
                                         frame[1],
                                         frame[2],
-                                        frameSize[1],
-                                        frameSize[2],
-                                        self.image:getDimensions()))
+                                    frameSize[k % #frameSize + 1][1],
+                                    frameSize[k % #frameSize + 1][2],
+                                    spriteSheet:getDimensions()))
                                 elseif type(frame) == "string" then
                                     frames[#frames + 1] = love.graphics.newImage(frame)
                                 end
@@ -242,7 +251,10 @@ sprite = sprite or {
         end
     end,
     centerOx = function(self) return self.flipHorizontal and -self.w / 2 / self.sx or self.w / 2 / self.sx end,
-    centerOy = function(self) return self.flipVertical and -self.h / 2 / self.sy or self.h / 2 / self.sy end
+    centerOy = function(self)
+        return self.flipVertical and -self.h / 2 / self.sy or self.h / 2 / self.sy
+    end,
+    type = "sprite"
 }
 
-return setmetatable(sprite, { __call = sprite.new, __index = object })
+return setmetatable(sprite, { __call = sprite.new, __index = object }) --Yay, inheritance!

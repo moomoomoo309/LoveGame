@@ -67,6 +67,9 @@
   * Install the [love-IDEA-plugin](https://github.com/rm-code/love-IDEA-plugin) using the instructions on the page.
   * Go to New->Project from Version Control->GitHub, and use the following URL.
      * https://github.com/moomoomoo309/LoveGame
+  * To connect to the Floobits workspace
+    * Go to Tools->Floobits->Join workspace by URL
+      * Enter https://floobits.com/moomoomoo309/LoveGame
   * To set up the build system:
      * Go to file->settings, and search for external tools.
      * Add a new tool, and set the following:

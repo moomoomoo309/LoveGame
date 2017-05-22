@@ -86,3 +86,11 @@ luac.out
 *.hex
 
 
+.idea/LoveGame.iml
+.idea/encodings.xml
+.idea/markdown-exported-files.xml
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml

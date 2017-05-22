@@ -78,6 +78,7 @@ animation = animation or {
         end
         if not self.sprite.visible then
             animation.runningAnimations[self.sprite] = nil
+            return
         end
         local timePassed = love.timer.getTime() - self.lastTime --Get the delta between the last frame of animation and now.
         if self.remainingTime > timePassed then --If the leftover time before the next frame is animated is higher than the time passed...
@@ -110,9 +111,7 @@ animation = animation or {
             elseif type(self.frameDurations) == "function" then
                 duration = self:frameDurations(self.currentFrame, self.frameCount)
             end
-            if not duration then
-                error(("frameDurations (%s) of animation incorrect! Expected table, number, or function, got %s."):format(self.frameDurations, type(self.frameDurations)))
-            end
+            assert(type(duration) == "table" or type(duration) == "number" or type(duration) == "function", ("frameDurations (%s) of animation incorrect! Expected table, number, or function, got %s."):format(self.frameDurations, type(self.frameDurations)))
             while timePassed > 0 do
                 if duration > timePassed then
                     self.remainingTime = duration - timePassed --Set the leftover time, and break; it's done!
@@ -139,10 +138,10 @@ animation = animation or {
         for _, anim in pairs(animation.runningAnimations) do
             anim:animate()
         end
-    end
+    end,
+    type = "animation",
+    class = animation
 }
 animation.unpause = animation.resume --Alias
 
-setmetatable(animation, { __call = animation.new })
-
-return animation
+return setmetatable(animation, { __call = animation.new })

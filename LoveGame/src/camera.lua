@@ -1,54 +1,6 @@
 object = object or require "object"
+timer = timer or require "timer"
 local camera
-
-local function removeSelf(self, tbl)
-    for i = 1, #tbl do
-        if tbl[i] == self then
-            table.remove(tbl, i)
-            break
-        end
-    end
-end
-
-local function transition(self, time, interpolation, values)
-    local interFct = camera.interpolations[interpolation] or camera.interpolations.linear --How it should interpolate
-    local startValues, endValues, keys = {}, {}, {}
-    for k, v in pairs(values) do
-        startValues[#startValues+1] = v
-        endValues[#endValues+1] = self[k]
-        keys[#keys+1] = k
-    end
-    local startTime = love.timer.getTime()
-    local stopTime = time + startTime
-    local transitionFct
-    local firstIteration = true --The first iteration is way off, so it should be ignored.
-    local lastInterValues = {}
-    transitionFct = function(self)
-        local currentTime = love.timer.getTime()
-        local percentProgress = (currentTime - startTime) / (stopTime - startTime)
-        percentProgress = percentProgress > 1 and 1 or percentProgress --Make sure the progress doesn't exceed one, but that it gets to the end at 1.
-        local deltas, interValues = {}, {}
-        for i = 1, #startValues do
-            interValues[i] = interFct(0, endValues[i] - startValues[i], percentProgress)
-            if #lastInterValues > 0 then
-                deltas[i] = interValues[i] - lastInterValues[i]
-            end
-        end
-        lastInterValues = interValues --Grab the last values for the next delta.
-        if firstIteration then
-            --Ignore the first iteration, since it isn't a delta in the first iteration.
-            firstIteration = false
-            return
-        end
-        for i = 1, #keys do
-            self[keys[i]] = self[keys[i]] + deltas[i] --Actually offset the values in the camera.
-        end
-        if percentProgress == 1 then
-            removeSelf(transitionFct, self.drawFcts) --Remove yourself from the draw functions.
-        end
-    end
-    self.drawFcts[#self.drawFcts+1] = transitionFct --Add the above function to the list of draw functions.
-end
 
 camera = {
     interpolations = {
@@ -62,7 +14,7 @@ camera = {
     },
     new = function(_, args)
         if not args then
-            args = _
+            args = _ or {}
         end
         local obj = object {
             x = args.x or 0,
@@ -72,7 +24,9 @@ camera = {
             viewport = args.viewport or love.graphics.getDimensions(),
             zoom = args.zoom or 1,
             rotation = args.rotation or 0,
-            drawFcts = {}
+            updateFcts = {},
+            followFct = nil,
+            inst = nil
         }
         obj:addCallback("w", function(self, w)
             self.viewport[1] = w
@@ -91,6 +45,10 @@ camera = {
             end
         end)
         obj.class = camera
+        if camera.inst then
+            error "Camera instance already exists! Camera is a singleton!"
+        end
+        camera.inst = obj
         return obj
     end,
     draw = function(self)
@@ -100,12 +58,12 @@ camera = {
         love.graphics.scale(self.zoom)
         love.graphics.translate(centerX, centerY)
         love.graphics.rotate(math.rad(self.rotation))
-        local drawFcts = self.drawFcts
-        for _, v in pairs(drawFcts) do
-            if v then
-                v(self)
-            end
-        end
+    end,
+    getTranslations = function(self)
+        self = self or camera.inst
+        local centerX = self.x + self.w / 2 / self.zoom
+        local centerY = self.y + self.h / 2 / self.zoom
+        return { math.rad(self.rotation), self.zoom, self.zoom, centerX, centerY }
     end,
     toCameraCoords = function(self, x, y)
         local xRot, yRot = math.cos(-self.rotation), math.sin(-self.rotation)
@@ -119,16 +77,80 @@ camera = {
         x, y = xRot * x - yRot * y, yRot * x + xRot * y
         return (x - self.w/2) / self.zoom, (y-self.h/2) / self.zoom
     end,
-    pan = function(self, x, y, time, interpolation)
-        transition(self, time, interpolation, { x = x, y = y })
+    transition = function(self, time, interpolation, values, key, fct)
+        local interFct = camera.interpolations[interpolation] or camera.interpolations.cos --How it should interpolate
+        local endValues, startValues, keys = {}, {}, {}
+        for k, v in pairs(values) do
+            endValues[#endValues+1] = v
+            startValues[#startValues+1] = self[k]
+            keys[#keys+1] = k
+            if time == 0 then
+                self[k] = v
+            end
+        end
+        if time == 0 then
+            if type(fct) == "function" then
+                fct(self, 1)
+            end
+            return
+        end
+        local transitionFct
+        local firstIteration = true --The first iteration is way off, so it should be ignored.
+        local lastInterValues = {}
+        local cam = camera.inst
+        transitionFct = function(timeElapsed)
+            local percentProgress = timeElapsed / time
+            percentProgress = percentProgress > 1 and 1 or percentProgress --Make sure the progress doesn't exceed one
+            local deltas, interValues = {}, {}
+            for i = 1, #endValues do
+                interValues[i] = interFct(0, startValues[i] - endValues[i], percentProgress)
+                if #lastInterValues > 0 then
+                    deltas[i] = interValues[i] - lastInterValues[i]
+                end
+            end
+            lastInterValues = interValues --Grab the last values for the next delta.
+            if firstIteration then
+                --Ignore the first iteration, since it isn't a delta in the first iteration.
+                firstIteration = false
+                return
+            end
+            for i = 1, #keys do
+                cam[keys[i]] = cam[keys[i]] + deltas[i] --Actually offset the values in the camera.
+            end
+            if type(fct) == "function" then
+                fct(cam, percentProgress)
+            end
+        end
+        cam.updateFcts[key or #cam.updateFcts+1] = transitionFct --Add the above function to the list of update functions.
+        timer.before(time, transitionFct)
+        timer.after(time, function()
+            for i = 1, #keys do
+                if values[i] ~= nil then
+                    cam[keys[i]] = values[i] --Make sure the camera values end up being where they should be.
+                end
+            end
+        end)
     end,
-    panTo = function(self, obj, time, interpolation)
-        local camX, camY = -obj.x, -obj.y
-        self:pan(camX, camY, time, interpolation)
+    pan = function(self, x, y, time, interpolation, fct)
+        return self:transition(time, interpolation, { x = x, y = y }, "pan", fct)
     end,
-    zoomTo = function(self, newZoom, time, interpolation)
-        transition(self, time, interpolation, { zoom = newZoom })
-    end
+    panTo = function(self, obj, time, interpolation, fct)
+        return self:pan(-obj.x, -obj.y, time, interpolation, fct)
+    end,
+    zoomTo = function(self, newZoom, time, interpolation, fct)
+        return self:transition(time, interpolation, { zoom = newZoom }, "zoom", fct)
+    end,
+    follow = function(self, obj)
+        if not self.followFct then
+            self.followFct = function()
+                self.x, self.y = -obj.x, -obj.y
+            end
+            timer["until"](function()
+                return not self.followFct
+            end, self.followFct, nil)
+        end
+    end,
+
 }
 
 return setmetatable(camera, { __call = camera.new, __index = object })

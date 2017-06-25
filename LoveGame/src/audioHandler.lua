@@ -1,8 +1,12 @@
+timer = timer or require "timer"
+
 local audioHandler
 
 local function addFromAudioObject(audioObj, name)
     audioHandler.audioObjs[name] = audioObj
 end
+
+local audioDir = "/assets"
 
 audioHandler = {
     audioObjs = {},
@@ -23,27 +27,66 @@ audioHandler = {
             return
         end
         local filePathWithoutExtension = filePath:sub(1, filePath:find(".", nil, true) and #filePath - filePath:reverse():find(".", nil, true) or #filePath)
-        local extension = filePath:sub(#filePathWithoutExtension + 2)
-        if audioHandler.audioObjs[filePathWithoutExtension] then
+        local extension = filePath:sub(#filePathWithoutExtension + 2 - #audioDir)
+        local name = filePathWithoutExtension:sub(#audioDir)
+        if audioHandler.audioObjs[fileName or name] then
             local extensionPriority = audioHandler.extensionPriorities[extension]
-            if extensionPriority and extensionPriority <= audioHandler.filePriorities[filePathWithoutExtension] then
+            if extensionPriority and extensionPriority <= audioHandler.filePriorities[fileName or name] then
                 print(("Tried to load %s, but priority was lower than existing audio file."):format(filePath))
                 return
             end
         end
-        audioHandler.audioObjs[filePathWithoutExtension] = love.audio.newSource(filePath, "static")
-        audioHandler.filePriorities[filePathWithoutExtension] = audioHandler.extensionPriorities[extension] or 0
+        audioHandler.audioObjs[fileName or name] = love.audio.newSource(filePath, "static")
+        audioHandler.filePriorities[fileName or name] = audioHandler.extensionPriorities[extension] or 0
     end,
     remove = function(fileName)
         --- Removes the audio object with the given name from the audio handler, if it exists.
         audioHandler.audioObjs[fileName] = nil
         audioHandler.filePriorities[fileName] = nil
     end,
-    play = function(fileName)
-        --- Plays the audio object with the given name from the audio handler, if it exists.
+    play = function(fileName, callback)
+        --- Plays the audio object with the given name from the audio handler, if it exists. Returns a function to stop playing the audio file.
         local audioObj = audioHandler.audioObjs[fileName]
         if audioObj then
-            love.audio.play(audioObj)
+            audioObj:play()
+        else
+            error(("No audio file with filename %s found."):format(fileName))
+        end
+        local cancelFct
+        if type(callback) == "function" then
+            cancelFct = timer.when(function()
+                return audioObj:isStopped()
+            end, type(callback)=="function" and callback or nil)
+        end
+        return function(runCallback)
+            cancelFct()
+            if runCallback and type(callback) == "function" then
+                callback()
+            end
+            audioObj:stop()
+        end
+    end,
+    loop = function(fileName, callback)
+        --- Loops the audio object with the given name from the audio handler, if it exists. Returns a function to stop playing the audio file.
+        local audioObj = audioHandler.audioObjs[fileName]
+        if audioObj then
+            audioObj:play()
+        else
+            error(("No audio file with filename %s found."):format(fileName))
+        end
+        local cancelFct = timer.everyCondition(function()
+            return audioObj:isStopped()
+        end, function()
+            audioObj:play()
+        end, function()
+            audioObj:stop()
+        end)
+        return function(runCallback)
+            cancelFct()
+            if runCallback and type(callback) == "function" then
+                callback()
+            end
+            audioObj:stop()
         end
     end,
     stop = function(fileName)
@@ -56,20 +99,21 @@ audioHandler = {
 }
 
 local files = { names = {}, priority = {}, extensions = {} }
-for k, v in pairs(love.filesystem.getDirectoryItems "") do
-    local filePathWithoutExtension = v:sub(1, v:find(".", nil, true) and #v - v:reverse():find(".", nil, true) or #v)
-    local extension = v:find(".", nil, true) and v:sub(#filePathWithoutExtension + 2) or nil
+for _, v in pairs(love.filesystem.getDirectoryItems(audioDir)) do
+    local filePathWithoutExtension = audioDir .. (v:sub(1, v:find(".", nil, true) and #v - v:reverse():find(".", nil, true) or #v))
+    local name = filePathWithoutExtension:sub(#audioDir+1)
+    local extension = v:find(".", nil, true) and v:sub(#filePathWithoutExtension + 2 - #audioDir) or nil
     if audioHandler.extensionPriorities[extension] then
-        if not files.priority[filePathWithoutExtension] or files.priority[filePathWithoutExtension] > audioHandler.extensionPriorities[extension] then
-            files.names[filePathWithoutExtension] = true
-            files.priority[filePathWithoutExtension] = audioHandler.extensionPriorities[extension]
-            files.extensions[filePathWithoutExtension] = extension
+        if not files.priority[name] or files.priority[name] > audioHandler.extensionPriorities[extension] then
+            files.names[name] = true
+            files.priority[name] = audioHandler.extensionPriorities[extension]
+            files.extensions[name] = extension
         end
     end
 end
 
 for k in pairs(files.names) do
-    audioHandler.add(("%s.%s"):format(k, files.extensions[k]))
+    audioHandler.add(("%s/%s.%s"):format(audioDir, k, files.extensions[k]), k)
 end
 files = nil
 

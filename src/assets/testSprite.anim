@@ -1,11 +1,11 @@
-color = color or require "color"
+local color = require "color"
 
 local tbl
 local hueCyclesPerSecond = .1
 tbl = {
     backAndForth = {
-        colors = function(_, _, frameCount)
-            return { color.hsv(frameCount * tbl.backAndForth.frameDurations * hueCyclesPerSecond * 256 % 256, 255, 255) }
+        colors = function(_, dt)
+            return { color.hsv(dt * hueCyclesPerSecond * 256 % 256, 255, 255) }
         end,
         frameSize = { 5, 1 },
         frames = {

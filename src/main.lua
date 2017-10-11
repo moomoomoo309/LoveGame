@@ -63,7 +63,6 @@ end
 function love.update(dt)
     loveloader.update()
     scheduler.update(dt)
-    sprite.update()
     testSprite2.rotation = (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360
     gooi.update(dt)
     camera.update()

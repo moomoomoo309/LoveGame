@@ -199,11 +199,10 @@ function sprite:_draw(x, y, w, h, rotation, flipHorizontal, flipVertical, ox, oy
     end
 
     local img, quad, currentTime, animIndex
-    local paused = self.animating and self.animating.paused
 
     if self.animating then
         currentTime = love.timer.getTime()
-        self.animating.currentFrame = self.animating:getIndex(currentTime)
+        self.animating:getFrame(currentTime)
         if self.animating.frames[self.animating.currentFrame]:type() ~= "Quad" then
             img = self.animating.frames[self.animating.currentFrame] --If it's not a quad, it's a Drawable.
         else
@@ -222,6 +221,7 @@ function sprite:_draw(x, y, w, h, rotation, flipHorizontal, flipVertical, ox, oy
         love.graphics.setColor(self.animating.currentColor or self.color)
     end
 
+    assert(img, ("Sprite with id %d has no image!"):format(self.Id))
     if quad then
         local _, _, quadWidth, quadHeight = quad:getViewport()
         self.sx = w / quadWidth --X scale

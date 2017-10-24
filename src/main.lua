@@ -11,9 +11,10 @@ shine = shine or require "shine"
 scheduler = scheduler or require "scheduler"
 
 local w, h = 50, 10
-local testSprite, testSprite2
+local testSprite, testSprite2, background
 local cam
 local effects = {}
+local rot = false
 
 function love.load()
     testSprite = sprite {
@@ -30,6 +31,14 @@ function love.load()
         h = 128,
         ox = sprite.centerOx,
         oy = sprite.centerOy,
+    }
+
+    background = sprite {
+        imagePath = "assets/idle_boxmaker_beta.png",
+        x = -200,
+        y = -200,
+        w = 400,
+        h = 400
     }
     testSprite.animations.backAndForth:start()
     testSprite2.animations.idle:start()
@@ -63,7 +72,11 @@ end
 function love.update(dt)
     loveloader.update()
     scheduler.update(dt)
-    testSprite2.rotation = (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360
+    if rot then
+        camera.inst.rotation = (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360
+    else
+        camera.inst.rotation = 0
+    end
     gooi.update(dt)
     camera.update()
 end
@@ -95,6 +108,13 @@ function love.mousepressed(x, y, button)
         else
             cam:follow(testSprite2)
         end
+    end
+end
+
+function love.keypressed(key)
+    print(key)
+    if key == "space" then
+        rot = not rot
     end
 end
 

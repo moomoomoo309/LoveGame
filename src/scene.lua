@@ -97,23 +97,22 @@ function scene:new(name)
     return setmetatable(scene.scenes[name], { __index = scene.scenes[name].class })
 end
 
---- Adds a sprite to the given scene.
+--- Sets a value to the given scene.
 --- @tparam string sceneName The name of the scene to set the sprite to.
 --- @tparam string spriteName The name of the sprite within the scene.
---- @tparam sprite sprite The sprite to insert into the scene.
+--- @tparam any value The value to insert into the scene.
 --- @return nil
-function scene:set(sceneName, spriteName, sprite)
+function scene:set(sceneName, spriteName, value)
     if not sprite then
-        sceneName, spriteName, sprite = self, sceneName, spriteName
+        sceneName, spriteName, value = self, sceneName, spriteName
     end
     sceneName = type(sceneName) == "table" and sceneName.name or sceneName
     assert(type(sceneName) == "string", ("Name expected, got %s."):format(type(sceneName)))
-    assert(type(spriteName) == "string", ("SceneName expected, got %s."):format(type(spriteName)))
-    assert(type(sprite) == "table", ("Table expected, got %s."):format(type(sprite) == "table" and sprite.type or type(sprite)))
+    assert(type(spriteName) == "string", ("spriteName expected, got %s."):format(type(spriteName)))
     if not scene.scenes[sceneName] then
         scene:new(sceneName)
     end
-    scene.scenes[sceneName][spriteName] = sprite
+    scene.scenes[sceneName][spriteName] = value
 end
 
 --- Clears the scene with the given name, or self if called with a scene.
@@ -150,6 +149,7 @@ function scene.show(sceneName)
     local foundScene = false
     for i = 1, #scene.currentScenes do
         local currentScene = scene.scenes[scene.currentScenes[i].name]
+        print(scene.currentScenes[i].name)
         if currentScene.onShow then
             currentScene:onShow(scene)
         end
@@ -228,24 +228,28 @@ function scene:load(sceneName)
         local sceneTbl = dofile("scenes/" .. sceneName .. ".scene")
         assert(sceneTbl, ("Could not load scene %s at scenes/%s.scene. Is the file malformed?"):format(sceneName, sceneName))
         local newScene = self:new(sceneName)
-        for k, item in pairs(sceneTbl) do
-            if k == "init" then
-                sceneTbl:init(scene)
-                newScene.init = item
-            elseif type(item) == "table" then
+        for k = #sceneTbl, 1, -1 do
+            local item = sceneTbl[k]
+            if type(item) == "table" then
                 local itemName = item.name
                 local itemConstructor = item.type
-                if itemName and not itemConstructor then
-                    newScene:set(sceneName, itemName, { itemName }) --Put a placeholder if needed.
-                end
                 item.name = nil
                 item.visible = false
                 local itemSprite = itemConstructor(item)
+                item.name = itemName
                 newScene:set(sceneName, itemName, itemSprite)
-            else
-                newScene[k] = item
             end
         end
+        for k, v in pairs(sceneTbl) do
+            if not tonumber(k) or k < 0 or k > #sceneTbl then
+                newScene[k] = v
+            end
+        end
+        if sceneTbl.init then
+            sceneTbl:init(scene)
+            newScene.init = sceneTbl.init
+        end
+        newScene.name = sceneName
         self.scenes[sceneName] = newScene
     end
     return self.scenes[sceneName]

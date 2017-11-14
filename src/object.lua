@@ -9,7 +9,6 @@ object = {
         __newindex = function()
         end
     }),
-    globalCallback = {}
 }
 
 --- Adds a callback to the given property (running the function when the property changes)
@@ -78,15 +77,15 @@ function object:new(tbl)
     local defaultMt = realElement:defaultMetatable()
     local element = setmetatable({}, defaultMt) --Gives the element its metatable for callbacks
     element:addCallback("class",
-    function(self, class)
-        if not getmetatable(self) then
-            --Add the metatable if it does not exist.
-            setmetatable(self, defaultMt)
-        end
-        local mt = getmetatable(self)
-        mt.__index = class --Update the __index so it grabs properties from its class.
-        mt.__call = class.new --Update the constructor so it can be created with classname().
-    end)
+        function(self, class)
+            if not getmetatable(self) then
+                --Add the metatable if it does not exist.
+                setmetatable(self, defaultMt)
+            end
+            local mt = getmetatable(self)
+            mt.__index = class --Update the __index so it grabs properties from its class.
+            mt.__call = class.new --Update the constructor so it can be created with classname().
+        end)
     for k, v in pairs(tbl) do
         realElement[k] = v --Make sure all of the values in tbl go into the object.
     end
@@ -96,23 +95,20 @@ end
 --- Gives the object a global callback. This will remove the ability to use normal callbacks!
 --- @tparam function fct The function to run when any property of the object changes.
 function object:setGlobalCallback(fct)
-    self.callbacks = setmetatable(object.globalCallback, { __newindex = function()
-        error "Global callback in use!"
-    end })
-    getmetatable(self).__newindex = fct
+    self.callbacks = setmetatable({ isGlobal = true }, { __newindex = fct })
 end
 
 --- Returns if this object has a global callback.
 --- @treturn boolean If this object has a global callback.
 function object:hasGlobalCallback()
-    return self.callbacks == object.globalCallback
+    return self.callbacks.isGlobal
 end
 
 --- Removes the global callback from the object.
 --- @return nil
 function object:removeGlobalCallback()
     self.callbacks = {}
-    getmetatable(self).__newindex = self:defaultMetatable()
+    setmetatable(self, self:defaultMetatable())
 end
 
 --- Returns if an object extends the given class. Can be given the class name as a string, or a reference to the class itself.

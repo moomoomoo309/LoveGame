@@ -215,7 +215,10 @@ function sprite:_draw(x, y, w, h, rotation, flipHorizontal, flipVertical, ox, oy
 
     --If the current frame being drawn wants to have its color changed, grab the old color then change it.
     local oldColor
-    if self.animating and self.animating.currentColor or self.color then
+    if self.color then
+        oldColor = { love.graphics.getColor() }
+    end
+    if self.animating and self.animating.currentColor then
         oldColor = { love.graphics.getColor() }
         self.animating.currentColor = self.animating:getColor(currentTime, self.animating.currentFrame)
         love.graphics.setColor(self.animating.currentColor or self.color)

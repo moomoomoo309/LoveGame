@@ -1,14 +1,11 @@
 --It begins.
 io.stdout:setvbuf "no" --Makes printing not buffer, so it prints instantly.
-animation = animation or require "animation"
-sprite = sprite or require "sprite"
-pretty = pretty or require "pl.pretty"
+local sprite = require "sprite"
 require "gooi"
-loveloader = loveloader or require "love-loader.love-loader"
-sti = sti or require "sti"
-camera = camera or require "camera"
-shine = shine or require "shine"
-scheduler = scheduler or require "scheduler"
+local loveloader = require "love-loader.love-loader"
+local camera = require "camera"
+local shine = require "shine"
+local scheduler = require "scheduler"
 
 local w, h = 50, 10
 local testSprite, testSprite2, background
@@ -35,10 +32,10 @@ function love.load()
 
     background = sprite {
         imagePath = "assets/idle_boxmaker_beta.png",
-        x = -200,
-        y = -200,
+        x = 0,
+        y = 0,
         w = 400,
-        h = 400
+        h = 400,
     }
     testSprite.animations.backAndForth:start()
     testSprite2.animations.idle:start()
@@ -61,7 +58,12 @@ function love.draw()
     effects.pause:draw(function()
         cam:draw()
         local trans = cam.getTransformations()
-        love.graphics.rectangle("fill", -trans[4], -trans[5], love.graphics.getWidth() / trans[2], love.graphics.getHeight() / trans[2])
+        -- Draw white background, make sure rectangle is large enough to cover all rotations.
+        -- The minimum would be size * sqrt(2), and the X and Y would be -trans[4]-size*(1-sqrt(2))/2 and -trans[5]-size*(1-sqrt(2))/2,
+        -- But why do sqrt(2) so much when you can just use 2 and 4, which are doable with left/right shifts?
+        local size = math.max(love.graphics.getWidth() / trans[2], love.graphics.getHeight() / trans[2])
+        love.graphics.rectangle("fill", -trans[4] - size / 4, -trans[5] - size / 4, size * 2, size * 2)
+
         sprite.drawAll()
         love.graphics.pop() --Pop the camera transformations. Anything controlled by the camera should go before this.
     end)
@@ -72,11 +74,7 @@ end
 function love.update(dt)
     loveloader.update()
     scheduler.update(dt)
-    if rot then
-        camera.inst.rotation = (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360
-    else
-        camera.inst.rotation = 0
-    end
+    camera.inst.rotation = rot and (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360 or 0
     gooi.update(dt)
     camera.update()
 end
@@ -104,7 +102,7 @@ function love.mousepressed(x, y, button)
         cam:zoomTo(newZoom, 1)
     elseif button == 3 then
         if cam.followFct then
-            cam.followFct = nil
+            cam:unfollow()
         else
             cam:follow(testSprite2)
         end
@@ -112,7 +110,6 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key)
-    print(key)
     if key == "space" then
         rot = not rot
     end

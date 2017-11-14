@@ -30,6 +30,7 @@ function spriteOverlay:new(spriteInstOrArgs, parent)
     end
     spriteInst.group = "overlay" --Make sure it doesn't get drawn by default.
     spriteInst.class = spriteOverlay
+    spriteInst.parentRotation = parent.parentRotation + parent.rotation
     return spriteInst
 end
 
@@ -88,7 +89,8 @@ function spriteOverlay:draw()
     y = self.y + parent.y
     w = self.w * parent.w
     h = self.h * parent.h
-    rotation = self.rotation + parent.rotation
+    self.parentRotation = parent.parentRotation + parent.rotation
+    rotation = self.rotation + self.parentRotation
     flipHorizontal = self.flipHorizontal ~= parent.flipHorizontal
     flipVertical = self.flipVertical ~= parent.flipVertical
     ox = self.ox * w

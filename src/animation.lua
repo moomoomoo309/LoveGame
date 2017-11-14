@@ -86,6 +86,9 @@ end
 --- Resumes the animation.
 --- @return nil
 function animation:resume()
+    if not self.paused then
+        return
+    end
     self.paused = false
     self.startTime = love.timer.getTime() --Update the time of the last frame
 end

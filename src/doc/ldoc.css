@@ -32,6 +32,7 @@ del, ins {
     text-decoration: none;
 }
 li {
+    list-style: disc;
     margin-left: 20px;
 }
 
@@ -127,7 +128,7 @@ em {
 
 h1 {
     font-size: 1.5em;
-    margin: 20px 0 20px 0;
+    margin: 0 0 20px 0;
 }
 
 h2, h3, h4 {
@@ -181,17 +182,22 @@ p.name {
     padding-top: 1em;
 }
 
+pre.example {
+    background-color: rgb(245, 245, 245);
+    border: 1px solid silver;
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    font-family: "Andale Mono", monospace;
+    font-size: .85em;
+}
+
 pre {
     background-color: rgb(245, 245, 245);
-    border: 1px solid #C0C0C0; /* silver */
+    border: 1px solid silver;
     padding: 10px;
     margin: 10px 0 10px 0;
     overflow: auto;
     font-family: "Andale Mono", monospace;
-}
-
-pre.example {
-    font-size: .85em;
 }
 
 table.index {
@@ -397,7 +403,6 @@ a:target + * {
     background-color: #FF9;
 }
 
-
 /* styles for prettification of source */
 pre .comment {
     color: #558817;
@@ -447,10 +452,6 @@ pre .global {
     color: #800080;
 }
 
-pre .user-keyword {
-    color: #800080;
-}
-
 pre .prompt {
     color: #558817;
 }
@@ -459,4 +460,3 @@ pre .url {
     color: #272fc2;
     text-decoration: underline;
 }
-

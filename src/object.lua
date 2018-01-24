@@ -130,7 +130,7 @@ function object:extends(className)
             return false
         end
         for i = 1, #checkedClasses do
-            assert(checkedClasses[i] ~= parent, ("Circular class dependency checking if %s extends %s."):format(originalClassname, originalExtensionCheck))
+            assert(checkedClasses[i] ~= parent, ("Circular class dependency when checking if %s extends %s."):format(originalClassname, originalExtensionCheck))
         end
         checkedClasses[#checkedClasses + 1] = parent
         if type(parent) == "function" then

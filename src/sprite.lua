@@ -217,6 +217,7 @@ function sprite:_draw(x, y, w, h, rotation, flipHorizontal, flipVertical, ox, oy
     local oldColor
     if self.color then
         oldColor = { love.graphics.getColor() }
+        love.graphics.setColor(self.color)
     end
     if self.animating and self.animating.currentColor then
         oldColor = { love.graphics.getColor() }
@@ -416,12 +417,12 @@ function sprite:setImagePath(imagePath)
             end
             if loadingAssets then
                 loadingCallbacks[#loadingCallbacks + 1] = function()
+                    local self = self
                     self.animations[name] = animation {
                         frames = frames,
                         frameDurations = anim.frameDurations,
-                        self = self,
                         colors = anim.colors,
-                        sprite = sprite
+                        sprite = self
                     }
                 end
             else
@@ -430,7 +431,7 @@ function sprite:setImagePath(imagePath)
                     frameDurations = anim.frameDurations,
                     self = self,
                     colors = anim.colors,
-                    sprite = sprite
+                    sprite = self
                 }
             end
         end

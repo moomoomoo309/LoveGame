@@ -35,7 +35,7 @@ function spriteOverlay:new(spriteInstOrArgs, parent)
 end
 
 --- Attaches this spriteOverlay onto the given sprite. Will error if a sprite is already attached.
---- @tparam sprite sprite The sprite this spriteOverlay should be attached to.
+--- @tparam sprite parent The sprite this spriteOverlay should be attached to.
 --- @tparam string|number key The key used when inserting this into its parent.
 --- @return nil
 function spriteOverlay:attach(parent, key)

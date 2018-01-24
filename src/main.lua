@@ -9,6 +9,8 @@ local scheduler = require "scheduler"
 local color = require "color"
 loadingAssets = true
 loadingCallbacks = {}
+local loadingFont
+local defaultFont = love.graphics.getFont()
 
 local w, h = 50, 10
 local testSprite, testSprite2, background
@@ -54,36 +56,42 @@ function love.load()
     effects.vignette:set("opacity", 1)
 
     effects.pause = effects.blur:chain(effects.vignette)
-
+    loadingFont = love.graphics.newFont(36)
     loader.start(function()
         loadingAssets = false
         for _, v in pairs(loadingCallbacks) do
             v()
         end
         loadingCallbacks = nil
+        loadingFont = nil
+        love.graphics.setFont(defaultFont)
     end)
+    love.graphics.setFont(loadingFont)
+end
 
+local function drawLoadingBar()
+    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+    local percentLoaded = loader.loadedCount / loader.resourceCount
+    local r, g, b = love.graphics.getColor()
+    love.graphics.printf("Loading...", w * .1, h * .375, w * .9, "left")
+    love.graphics.printf(("%d%%"):format(percentLoaded * 100), 0, h * .375, w * .9, "right")
+    love.graphics.setColor(128, 128, 128)
+    love.graphics.rectangle("fill", w * .1, h * .45, w * .8, h * .1)
+
+    --A scissor is used here so the rectangle could easily be replaced with an image.
+    love.graphics.setScissor(w * .11, h * .465, w * .78 * percentLoaded, h * .0725)
+
+    --TODO: Replace the rectangle with something better
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.rectangle("fill", w * .11, h * .465, w * .78, h * .0725)
+    love.graphics.setColor(r, g, b)
+
+    love.graphics.setScissor()
 end
 
 function love.draw()
     if loadingAssets then
-        local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-        local percentLoaded = loader.loadedCount / loader.resourceCount
-        local r, g, b = love.graphics.getColor()
-        love.graphics.printf("Loading...", w * .1, h * .375, w * .9, "left")
-        love.graphics.printf(("%d%%"):format(percentLoaded * 100), 0, h * .375, w * .9, "right")
-        love.graphics.setColor(128, 128, 128)
-        love.graphics.rectangle("fill", w * .1, h * .45, w * .8, h * .1)
-
-        --A scissor is used here so the rectangle could easily be replaced with an image.
-        love.graphics.setScissor(w * .11, h * .465, w * .78 * percentLoaded, h * .0725)
-
-        --TODO: Replace the rectangle with something better
-        love.graphics.setColor(255, 0, 0)
-        love.graphics.rectangle("fill", w * .11, h * .465, w * .78, h * .0725)
-        love.graphics.setColor(r, g, b)
-
-        love.graphics.setScissor()
+        drawLoadingBar()
     else
         --Draw anything not affected by the camera, but below the sprites and GUI here.
         love.graphics.setBackgroundColor(0, 0, 0)

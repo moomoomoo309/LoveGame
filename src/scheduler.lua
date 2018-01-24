@@ -1,5 +1,5 @@
---- A class allowing for functions to be scheduled based on certain conditions.
---- @classmod scheduler
+--- A module allowing for functions to be scheduled based on certain conditions.
+--- @module scheduler
 --- @field paused Contains whether a group is paused or not.
 --- @field functions Contains the functions within a group.
 --- @field groups Contains a flat list of groups.

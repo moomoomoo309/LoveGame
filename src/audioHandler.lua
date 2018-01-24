@@ -1,5 +1,5 @@
---- A class handling the playing, pausing, and looping of audio.
---- @classmod audioHandler
+--- A module handling the playing, pausing, and looping of audio.
+--- @module audioHandler
 
 local scheduler = require "scheduler"
 local loader = require "love-loader.love-loader"

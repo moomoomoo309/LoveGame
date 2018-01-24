@@ -20,7 +20,6 @@ camera = {
 }
 
 --- Creates the instance of the camera with the values passed in args.
---- @param _ (Unused) Allows camera.new to be called or camera:new.
 --- @tparam table args A table of arguments modifying the camera. Can be any of the following:<br>
 --- x: The x coordinate of the camera. Defaults to 0.<br>
 --- y: The y coordinate of the camera. Defaults to 0.<br>
@@ -30,9 +29,9 @@ camera = {
 --- zoom: How much the camera should be zoomed in. Defaults to 1.<br>
 --- rotation: How much the camera should be rotated, in degrees. Defaults to 0.<br>
 --- @treturn camera The instance of the camera. Will error if the camera instance already exists.
-function camera.new(_, args)
+function camera.new(args)
     assert(camera.inst == nil, "Camera instance already exists! Camera is a singleton!")
-    args = args or _ or {}
+    args = args or {}
     local obj = object {
         x = args.x or 0,
         y = args.y or 0,

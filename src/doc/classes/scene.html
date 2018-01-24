@@ -40,19 +40,19 @@
             <h2>Classes</h2>
             <ul class="nowrap">
                 <li><a href="../classes/animation.html">animation</a></li>
-                <li><a href="../classes/audioHandler.html">audioHandler</a></li>
                 <li><a href="../classes/camera.html">camera</a></li>
                 <li><a href="../classes/entity.html">entity</a></li>
                 <li><a href="../classes/object.html">object</a></li>
                 <li><strong>scene</strong></li>
-                <li><a href="../classes/scheduler.html">scheduler</a></li>
                 <li><a href="../classes/sprite.html">sprite</a></li>
                 <li><a href="../classes/spriteOverlay.html">spriteOverlay</a></li>
             </ul>
             <h2>Modules</h2>
             <ul class="nowrap">
+                <li><a href="../modules/audioHandler.html">audioHandler</a></li>
                 <li><a href="../modules/color.html">color</a></li>
                 <li><a href="../modules/miscUtils.html">miscUtils</a></li>
+                <li><a href="../modules/scheduler.html">scheduler</a></li>
             </ul>
 
         </div>
@@ -147,7 +147,7 @@
             <br/>
 
 
-            <h2><a name="Local_Functions"></a>Local Functions</h2>
+            <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
             Methods
             <dl class="function">
                 <dt>
@@ -161,7 +161,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">text</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The text to write to the screen.
                         </li>
                         <li><span class="parameter">paddingX</span>
@@ -177,7 +177,7 @@
                             Which row the text should be on (1-however many fit on the screen)
                         </li>
                         <li><span class="parameter">color</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <span
                                     class="type">nil</span></span>
                             (Optional) What color the text should be. Defaults to white.
                         </li>
@@ -186,7 +186,7 @@
 
                 </dd>
             </dl>
-            <h2><a name="Methods"></a>Methods</h2>
+            <h2 class="section-header "><a name="Methods"></a>Methods</h2>
 
             <dl class="function">
                 <dt>
@@ -204,7 +204,7 @@
                             unused
                         </li>
                         <li><span class="parameter">text</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The text to print on screen
                         </li>
                         <li><span class="parameter">reset</span>
@@ -213,7 +213,7 @@
                             (Optional) If true, will reset the text back to the top of the screen.
                         </li>
                         <li><span class="parameter">color</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The color to make the text. White by default.
                         </li>
@@ -254,7 +254,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">name</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             the name of the new scene
                         </li>
                     </ul>
@@ -278,11 +278,11 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the scene to set the sprite to.
                         </li>
                         <li><span class="parameter">spriteName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the sprite within the scene.
                         </li>
                         <li><span class="parameter">value</span>
@@ -310,7 +310,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The name of the scene, if a reference to the scene is not available.
                         </li>
@@ -335,7 +335,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the scene, if a reference to the scene is not available.
                         </li>
                     </ul>
@@ -359,7 +359,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the scene.
                         </li>
                     </ul>
@@ -383,7 +383,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the first scene to show.
                         </li>
                     </ul>
@@ -418,7 +418,7 @@
                     <ol>
 
                         <span class="types"><a class="type"
-                                               href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+                                               href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
                         which scenes are visible.
                     </ol>
 
@@ -452,7 +452,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">sceneName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The path to the scene.
                         </li>
                     </ul>
@@ -583,8 +583,8 @@
         </div> <!-- id="content" -->
     </div> <!-- id="main" -->
     <div id="about">
-        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-        <i style="float:right;">Last updated 2018-01-24 12:50:09 </i>
+        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+        <i style="float:right;">Last updated 2018-01-24 15:22:15 </i>
     </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

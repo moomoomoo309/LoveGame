@@ -32,97 +32,93 @@
 
             <h2>Contents</h2>
             <ul>
+                <li><a href="#Functions">Functions</a></li>
                 <li><a href="#Fields">Fields</a></li>
-                <li><a href="#Methods">Methods</a></li>
             </ul>
 
 
+            <h2>Modules</h2>
+            <ul class="nowrap">
+                <li><a href="../modules/audioHandler.html">audioHandler</a></li>
+                <li><a href="../modules/color.html">color</a></li>
+                <li><a href="../modules/miscUtils.html">miscUtils</a></li>
+                <li><strong>scheduler</strong></li>
+            </ul>
             <h2>Classes</h2>
             <ul class="nowrap">
                 <li><a href="../classes/animation.html">animation</a></li>
-                <li><a href="../classes/audioHandler.html">audioHandler</a></li>
                 <li><a href="../classes/camera.html">camera</a></li>
                 <li><a href="../classes/entity.html">entity</a></li>
                 <li><a href="../classes/object.html">object</a></li>
                 <li><a href="../classes/scene.html">scene</a></li>
-                <li><strong>scheduler</strong></li>
                 <li><a href="../classes/sprite.html">sprite</a></li>
                 <li><a href="../classes/spriteOverlay.html">spriteOverlay</a></li>
-            </ul>
-            <h2>Modules</h2>
-            <ul class="nowrap">
-                <li><a href="../modules/color.html">color</a></li>
-                <li><a href="../modules/miscUtils.html">miscUtils</a></li>
             </ul>
 
         </div>
 
         <div id="content">
 
-            <h1>Class <code>scheduler</code></h1>
-            <p>A class allowing for functions to be scheduled based on certain conditions.</p>
+            <h1>Module <code>scheduler</code></h1>
+            <p>A module allowing for functions to be scheduled based on certain conditions.</p>
             <p></p>
 
 
-            <h2><a href="#Fields">Fields</a></h2>
+            <h2><a href="#Functions">Functions</a></h2>
             <table class="function_list">
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler.unpause">scheduler.unpause</a></td>
-                    <td class="summary">An alias to scheduler.resume</td>
-                </tr>
-            </table>
-            <h2><a href="#Methods">Methods</a></h2>
-            <table class="function_list">
-                <tr>
-                    <td class="name" nowrap><a href="#scheduler:sleep">scheduler:sleep (seconds)</a></td>
+                    <td class="name" nowrap><a href="#sleep">sleep (seconds)</a></td>
                     <td class="summary">Sleeps the running coroutine until seconds has passed.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:after">scheduler:after (seconds, fct, group)</a></td>
+                    <td class="name" nowrap><a href="#after">after (seconds, fct, group)</a></td>
                     <td class="summary">Run fct after seconds has passed.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:before">scheduler:before (seconds, fct, cancelFct,
-                        group)</a></td>
+                    <td class="name" nowrap><a href="#before">before (seconds, fct, cancelFct, group)</a></td>
                     <td class="summary">Run fct until seconds has passed.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:_until">scheduler:_until (conditionFct, fct, cancelFct,
-                        group)</a></td>
+                    <td class="name" nowrap><a href="#_until">_until (conditionFct, fct, cancelFct, group)</a></td>
                     <td class="summary">Runs fct until conditionFct returns a truthy value or the function returned is
                         called.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:when">scheduler:when (conditionFct, fct, cancelFct,
-                        group)</a></td>
+                    <td class="name" nowrap><a href="#when">when (conditionFct, fct, cancelFct, group)</a></td>
                     <td class="summary">Runs fct when conditionFct returns a truthy value or the function returned is
                         called without a parameter.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:every">scheduler:every (seconds, fct, cancelFct,
-                        group)</a></td>
+                    <td class="name" nowrap><a href="#every">every (seconds, fct, cancelFct, group)</a></td>
                     <td class="summary">Runs fct every seconds seconds.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:everyCondition">scheduler:everyCondition (conditionFct,
-                        fct, risingFct, fallingFct, cancelFct, group)</a></td>
+                    <td class="name" nowrap><a href="#everyCondition">everyCondition (conditionFct, fct, risingFct,
+                        fallingFct, cancelFct, group)</a></td>
                     <td class="summary">Runs fct every time conditionFct returns a truthy value.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:pause">scheduler:pause (group)</a></td>
+                    <td class="name" nowrap><a href="#pause">pause (group)</a></td>
                     <td class="summary">Pause the given group.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:resume">scheduler:resume (group)</a></td>
+                    <td class="name" nowrap><a href="#resume">resume (group)</a></td>
                     <td class="summary">Resumes the given group.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#scheduler:update">scheduler:update (dt)</a></td>
+                    <td class="name" nowrap><a href="#update">update (dt)</a></td>
                     <td class="summary">Updates all of the functions in the scheduler, checking if any need to run and
                         running them if necessary.
                     </td>
+                </tr>
+            </table>
+            <h2><a href="#Fields">Fields</a></h2>
+            <table class="function_list">
+                <tr>
+                    <td class="name" nowrap><a href="#unpause">unpause</a></td>
+                    <td class="summary">An alias to scheduler.resume</td>
                 </tr>
             </table>
 
@@ -130,31 +126,12 @@
             <br/>
 
 
-            <h2><a name="Fields"></a>Fields</h2>
+            <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
             <dl class="function">
                 <dt>
-                    <a name="scheduler.unpause"></a>
-                    <strong>scheduler.unpause</strong>
-                </dt>
-                <dd>
-                    An alias to scheduler.resume
-
-
-                    <h3>See also:</h3>
-                    <ul>
-                        <a href="../classes/scheduler.html#scheduler:resume">scheduler.resume</a>
-                    </ul>
-
-
-                </dd>
-            </dl>
-            <h2><a name="Methods"></a>Methods</h2>
-
-            <dl class="function">
-                <dt>
-                    <a name="scheduler:sleep"></a>
-                    <strong>scheduler:sleep (seconds)</strong>
+                    <a name="sleep"></a>
+                    <strong>sleep (seconds)</strong>
                 </dt>
                 <dd>
                     Sleeps the running coroutine until seconds has passed. Will not work on the main thread.
@@ -177,8 +154,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:after"></a>
-                    <strong>scheduler:after (seconds, fct, group)</strong>
+                    <a name="after"></a>
+                    <strong>after (seconds, fct, group)</strong>
                 </dt>
                 <dd>
                     Run fct after seconds has passed. Returns a function which cancels this function.
@@ -195,7 +172,7 @@
                             The function to run after the time has passed.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default"
                         </li>
@@ -211,8 +188,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:before"></a>
-                    <strong>scheduler:before (seconds, fct, cancelFct, group)</strong>
+                    <a name="before"></a>
+                    <strong>before (seconds, fct, cancelFct, group)</strong>
                 </dt>
                 <dd>
                     Run fct until seconds has passed. Returns a function which cancels this function.
@@ -234,7 +211,7 @@
                             (Optional) A function to run if this one is cancelled.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default".
                         </li>
@@ -250,8 +227,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:_until"></a>
-                    <strong>scheduler:_until (conditionFct, fct, cancelFct, group)</strong>
+                    <a name="_until"></a>
+                    <strong>_until (conditionFct, fct, cancelFct, group)</strong>
                 </dt>
                 <dd>
                     Runs fct until conditionFct returns a truthy value or the function returned is called.
@@ -273,7 +250,7 @@
                             (Optional) A function to run if this one is cancelled.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default".
                         </li>
@@ -289,8 +266,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:when"></a>
-                    <strong>scheduler:when (conditionFct, fct, cancelFct, group)</strong>
+                    <a name="when"></a>
+                    <strong>when (conditionFct, fct, cancelFct, group)</strong>
                 </dt>
                 <dd>
                     Runs fct when conditionFct returns a truthy value or the function returned is called without a
@@ -313,7 +290,7 @@
                             (Optional) A function to run if this one is cancelled.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default".
                         </li>
@@ -329,8 +306,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:every"></a>
-                    <strong>scheduler:every (seconds, fct, cancelFct, group)</strong>
+                    <a name="every"></a>
+                    <strong>every (seconds, fct, cancelFct, group)</strong>
                 </dt>
                 <dd>
                     Runs fct every seconds seconds.
@@ -352,7 +329,7 @@
                             (Optional) A function to run if this one is cancelled.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default".
                         </li>
@@ -368,9 +345,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:everyCondition"></a>
-                    <strong>scheduler:everyCondition (conditionFct, fct, risingFct, fallingFct, cancelFct,
-                        group)</strong>
+                    <a name="everyCondition"></a>
+                    <strong>everyCondition (conditionFct, fct, risingFct, fallingFct, cancelFct, group)</strong>
                 </dt>
                 <dd>
                     Runs fct every time conditionFct returns a truthy value.
@@ -403,7 +379,7 @@
                             (Optional) A function to run if this one is cancelled.
                         </li>
                         <li><span class="parameter">group</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a> or <span
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span
                                     class="type">nil</span></span>
                             (Optional) The group the function should be in. Defaults to "default".
                         </li>
@@ -419,8 +395,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:pause"></a>
-                    <strong>scheduler:pause (group)</strong>
+                    <a name="pause"></a>
+                    <strong>pause (group)</strong>
                 </dt>
                 <dd>
                     Pause the given group.
@@ -443,8 +419,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:resume"></a>
-                    <strong>scheduler:resume (group)</strong>
+                    <a name="resume"></a>
+                    <strong>resume (group)</strong>
                 </dt>
                 <dd>
                     Resumes the given group.
@@ -467,8 +443,8 @@
 
                 </dd>
                 <dt>
-                    <a name="scheduler:update"></a>
-                    <strong>scheduler:update (dt)</strong>
+                    <a name="update"></a>
+                    <strong>update (dt)</strong>
                 </dt>
                 <dd>
                     Updates all of the functions in the scheduler, checking if any need to run and running them if
@@ -492,13 +468,32 @@
 
                 </dd>
             </dl>
+            <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+            <dl class="function">
+                <dt>
+                    <a name="unpause"></a>
+                    <strong>unpause</strong>
+                </dt>
+                <dd>
+                    An alias to scheduler.resume
+
+
+                    <h3>See also:</h3>
+                    <ul>
+                        <a href="../modules/scheduler.html#resume">scheduler.resume</a>
+                    </ul>
+
+
+                </dd>
+            </dl>
 
 
         </div> <!-- id="content" -->
     </div> <!-- id="main" -->
     <div id="about">
-        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-        <i style="float:right;">Last updated 2018-01-24 12:52:36 </i>
+        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+        <i style="float:right;">Last updated 2018-01-24 15:30:21 </i>
     </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

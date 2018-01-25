@@ -1,7 +1,13 @@
-# Trying to learn Lua & Love2D!<br><br>Assignments
+### Trying to learn Lua & Love2D!
 
-### Note: Documentation located at `/src/doc/index.html/`
+# Documentation
+### Lua itself
+- [Syntax](https://learnxinyminutes.com/docs/lua/)
+- [More thorough documentation](https://www.lua.org/pil/contents.html) (Technically for Lua 5.0, but it's almost identical)
+### Local code:
+- `/src/doc/index.html/`
 
+# Assignments
 ## Make testSprite2 flip by pressing 'e'!
 ### Two methods (try both!):
 - Add code into `love.keypressed` and `love.keyreleased` to do it.

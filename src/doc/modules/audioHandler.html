@@ -32,83 +32,83 @@
 
             <h2>Contents</h2>
             <ul>
-                <li><a href="#Methods">Methods</a></li>
+                <li><a href="#Functions">Functions</a></li>
             </ul>
 
 
+            <h2>Modules</h2>
+            <ul class="nowrap">
+                <li><strong>audioHandler</strong></li>
+                <li><a href="../modules/color.html">color</a></li>
+                <li><a href="../modules/miscUtils.html">miscUtils</a></li>
+                <li><a href="../modules/scheduler.html">scheduler</a></li>
+            </ul>
             <h2>Classes</h2>
             <ul class="nowrap">
                 <li><a href="../classes/animation.html">animation</a></li>
-                <li><strong>audioHandler</strong></li>
                 <li><a href="../classes/camera.html">camera</a></li>
                 <li><a href="../classes/entity.html">entity</a></li>
                 <li><a href="../classes/object.html">object</a></li>
                 <li><a href="../classes/scene.html">scene</a></li>
-                <li><a href="../classes/scheduler.html">scheduler</a></li>
                 <li><a href="../classes/sprite.html">sprite</a></li>
                 <li><a href="../classes/spriteOverlay.html">spriteOverlay</a></li>
-            </ul>
-            <h2>Modules</h2>
-            <ul class="nowrap">
-                <li><a href="../modules/color.html">color</a></li>
-                <li><a href="../modules/miscUtils.html">miscUtils</a></li>
             </ul>
 
         </div>
 
         <div id="content">
 
-            <h1>Class <code>audioHandler</code></h1>
-            <p>A class handling the playing, pausing, and looping of audio.</p>
+            <h1>Module <code>audioHandler</code></h1>
+            <p>A module handling the playing, pausing, and looping of audio.</p>
             <p></p>
 
 
-            <h2><a href="#Methods">Methods</a></h2>
+            <h2><a href="#Functions">Functions</a></h2>
             <table class="function_list">
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:add">audioHandler:add (filePath, fileName)</a></td>
+                    <td class="name" nowrap><a href="#add">add (filePath, fileName)</a></td>
                     <td class="summary">Adds an audio file into the audio subsystem.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:remove">audioHandler:remove (fileName)</a></td>
+                    <td class="name" nowrap><a href="#remove">remove (fileName)</a></td>
                     <td class="summary">Removes the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:play">audioHandler:play (fileName, callback)</a></td>
+                    <td class="name" nowrap><a href="#play">play (fileName, callback)</a></td>
                     <td class="summary">Plays the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:loop">audioHandler:loop (fileName, callback)</a></td>
+                    <td class="name" nowrap><a href="#loop">loop (fileName, callback)</a></td>
                     <td class="summary">Loops the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:pauseAll">audioHandler:pauseAll ()</a></td>
+                    <td class="name" nowrap><a href="#pauseAll">pauseAll ()</a></td>
                     <td class="summary">Pauses all playing audio.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:resumeAll">audioHandler:resumeAll ()</a></td>
+                    <td class="name" nowrap><a href="#resumeAll">resumeAll ()</a></td>
                     <td class="summary">Resumes all paused audio.</td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:stop">audioHandler:stop (fileName)</a></td>
+                    <td class="name" nowrap><a href="#stop">stop (fileName)</a></td>
                     <td class="summary">Stops playing the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:pause">audioHandler:pause (fileName)</a></td>
+                    <td class="name" nowrap><a href="#pause">pause (fileName)</a></td>
                     <td class="summary">Pauses the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
                 </tr>
                 <tr>
-                    <td class="name" nowrap><a href="#audioHandler:resume">audioHandler:resume (fileName)</a></td>
+                    <td class="name" nowrap><a href="#resume">resume (fileName)</a></td>
                     <td class="summary">Resumes the audio object with the given name from the audio handler, if it
                         exists.
                     </td>
@@ -119,12 +119,12 @@
             <br/>
 
 
-            <h2><a name="Methods"></a>Methods</h2>
+            <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
             <dl class="function">
                 <dt>
-                    <a name="audioHandler:add"></a>
-                    <strong>audioHandler:add (filePath, fileName)</strong>
+                    <a name="add"></a>
+                    <strong>add (filePath, fileName)</strong>
                 </dt>
                 <dd>
                     Adds an audio file into the audio subsystem. The file will override a file with the same name if
@@ -136,11 +136,11 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">filePath</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The path to the audio file.
                         </li>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to add to the audio handler.
                         </li>
                     </ul>
@@ -154,8 +154,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:remove"></a>
-                    <strong>audioHandler:remove (fileName)</strong>
+                    <a name="remove"></a>
+                    <strong>remove (fileName)</strong>
                 </dt>
                 <dd>
                     Removes the audio object with the given name from the audio handler, if it exists.
@@ -164,7 +164,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to remove from the audio handler.
                         </li>
                     </ul>
@@ -178,8 +178,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:play"></a>
-                    <strong>audioHandler:play (fileName, callback)</strong>
+                    <a name="play"></a>
+                    <strong>play (fileName, callback)</strong>
                 </dt>
                 <dd>
                     Plays the audio object with the given name from the audio handler, if it exists. Returns a function
@@ -189,7 +189,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to play.
                         </li>
                         <li><span class="parameter">callback</span>
@@ -210,8 +210,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:loop"></a>
-                    <strong>audioHandler:loop (fileName, callback)</strong>
+                    <a name="loop"></a>
+                    <strong>loop (fileName, callback)</strong>
                 </dt>
                 <dd>
                     Loops the audio object with the given name from the audio handler, if it exists. Returns a function
@@ -221,7 +221,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to play.
                         </li>
                         <li><span class="parameter">callback</span>
@@ -242,8 +242,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:pauseAll"></a>
-                    <strong>audioHandler:pauseAll ()</strong>
+                    <a name="pauseAll"></a>
+                    <strong>pauseAll ()</strong>
                 </dt>
                 <dd>
                     Pauses all playing audio.
@@ -258,8 +258,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:resumeAll"></a>
-                    <strong>audioHandler:resumeAll ()</strong>
+                    <a name="resumeAll"></a>
+                    <strong>resumeAll ()</strong>
                 </dt>
                 <dd>
                     Resumes all paused audio.
@@ -274,8 +274,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:stop"></a>
-                    <strong>audioHandler:stop (fileName)</strong>
+                    <a name="stop"></a>
+                    <strong>stop (fileName)</strong>
                 </dt>
                 <dd>
                     Stops playing the audio object with the given name from the audio handler, if it exists.
@@ -284,7 +284,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to stop.
                         </li>
                     </ul>
@@ -298,8 +298,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:pause"></a>
-                    <strong>audioHandler:pause (fileName)</strong>
+                    <a name="pause"></a>
+                    <strong>pause (fileName)</strong>
                 </dt>
                 <dd>
                     Pauses the audio object with the given name from the audio handler, if it exists.
@@ -308,7 +308,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to pause.
                         </li>
                     </ul>
@@ -322,8 +322,8 @@
 
                 </dd>
                 <dt>
-                    <a name="audioHandler:resume"></a>
-                    <strong>audioHandler:resume (fileName)</strong>
+                    <a name="resume"></a>
+                    <strong>resume (fileName)</strong>
                 </dt>
                 <dd>
                     Resumes the audio object with the given name from the audio handler, if it exists.
@@ -332,7 +332,7 @@
                     <h3>Parameters:</h3>
                     <ul>
                         <li><span class="parameter">fileName</span>
-                            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+                            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
                             The name of the file to resume.
                         </li>
                     </ul>
@@ -351,8 +351,8 @@
         </div> <!-- id="content" -->
     </div> <!-- id="main" -->
     <div id="about">
-        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-        <i style="float:right;">Last updated 2018-01-24 12:52:36 </i>
+        <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+        <i style="float:right;">Last updated 2018-01-24 15:30:21 </i>
     </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

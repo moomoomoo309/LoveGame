@@ -4,6 +4,7 @@
 ### Lua itself
 - [Syntax](https://learnxinyminutes.com/docs/lua/)
 - [More thorough documentation](https://www.lua.org/pil/contents.html) (Technically for Lua 5.0, but it's almost identical)
+- [Love2D documentation](https://www.love2d.org/wiki/Main_Page)
 ### Local code:
 - `/src/doc/index.html/`
 

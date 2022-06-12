@@ -2,60 +2,59 @@
 io.stdout:setvbuf "no" --Makes printing not buffer, so it prints instantly.
 local sprite = require "sprite"
 require "gooi"
-local loader = require "love-loader.love-loader"
-local camera = require "camera"
-local shine = require "shine"
-local scheduler = require "scheduler"
-local color = require "color"
 loadingAssets = true
 loadingCallbacks = {}
+local loader = require "love-loader.love-loader"
+local sti = require "sti"
+local camera = require "camera"
+local moonshine = require "moonshine"
+local scheduler = require "scheduler"
+local baton = require "baton.baton"
+local bump = require "bump.bump"
+local entity = require "entity"
+
 local loadingFont
 local defaultFont = love.graphics.getFont()
-
-local w, h = 50, 10
-local testSprite, testSprite2, background
+local w, h = love.graphics.getDimensions()
+local testSprite, playerSprite, background
 local cam
 local effects = {}
 local rot = false
+local controls
+
+local defaultControls = {
+    jump = { "key:up", "key:w", "button:dpup", "button:a", "axis:lefty-" },
+    duck = { "key:down", "key:s", "button:dpdown", "axis:lefty+" },
+    right = { "key:right", "key:d", "button:dpright", "axis:leftx+" },
+    left = { "key:left", "key:a", "button:dpleft", "axis:leftx-" },
+    pause = { "key:escape", "button:start" }
+}
 
 function love.load()
-    testSprite = sprite {
-        imagePath = "assets/testSprite.png",
-        w = w,
-        h = h,
+    playerSprite = sprite {
+        imagePath = "assets/idle_boxmaker_beta.png",
+        x = w / 2,
+        y = h / 2,
+        w = 34,
+        h = 64,
         ox = sprite.centerOx,
         oy = sprite.centerOy,
-    }
-
-    testSprite2 = sprite {
-        imagePath = "assets/idle_boxmaker_beta.png",
-        w = 64,
-        h = 128,
-        ox = sprite.centerOx,
-        oy = sprite.centerOy,
-    }
-
-    background = sprite {
-        imagePath = "assets/idle_boxmaker_beta.png",
-        x = 0,
-        y = 0,
-        w = 400,
-        h = 400,
     }
     loadingCallbacks[#loadingCallbacks + 1] = function()
-        testSprite.animations.backAndForth:start()
-        testSprite2.animations.idle:start()
+        playerSprite.animations.idle:start()
     end
-    cam = camera:new()
-    effects.blur = shine.boxblur()
-    effects.blur.radius_v, effects.blur.radius_h = 1, 1
 
-    effects.vignette = shine.vignette()
-    effects.vignette:set("radius", .95)
-    effects.vignette:set("softness", .5)
-    effects.vignette:set("opacity", 1)
+    cam = camera:new {
+        w = w,
+        h = h,
+    }
+    cam:follow(player)
+    effects.pause = moonshine(moonshine.effects.boxblur).chain(moonshine.effects.vignette)
+    effects.pause.boxblur.radius = 1
+    effects.pause.vignette.radius = .95
+    effects.pause.vignette.softness = .5
+    effects.pause.vignette.opacity = 1
 
-    effects.pause = effects.blur:chain(effects.vignette)
     loadingFont = love.graphics.newFont(36)
     loader.start(function()
         loadingAssets = false
@@ -67,6 +66,7 @@ function love.load()
         love.graphics.setFont(defaultFont)
     end)
     love.graphics.setFont(loadingFont)
+    controls = baton.new(defaultControls, love.joystick.getJoysticks()[1])
 end
 
 local function drawLoadingBar()
@@ -75,7 +75,7 @@ local function drawLoadingBar()
     local r, g, b = love.graphics.getColor()
     love.graphics.printf("Loading...", w * .1, h * .375, w * .9, "left")
     love.graphics.printf(("%d%%"):format(percentLoaded * 100), 0, h * .375, w * .9, "right")
-    love.graphics.setColor(128, 128, 128)
+    love.graphics.setColor(.5, .5, .5)
     love.graphics.rectangle("fill", w * .1, h * .45, w * .8, h * .1)
 
     --A scissor is used here so the rectangle could easily be replaced with an image.
@@ -95,7 +95,7 @@ function love.draw()
     else
         --Draw anything not affected by the camera, but below the sprites and GUI here.
         love.graphics.setBackgroundColor(0, 0, 0)
-        effects.pause:draw(function()
+        effects.pause.draw(function()
             cam:draw()
             local trans = cam.getTransformations()
             -- Draw white background, make sure rectangle is large enough to cover all rotations.
@@ -103,11 +103,26 @@ function love.draw()
             local posOffset = size * .20710678118654757 --This constant is (sqrt(2)-1)/2.
             size = size * 1.4142135623730951 --This constant is sqrt(2).
             love.graphics.rectangle("fill", -trans[4] - posOffset, -trans[5] - posOffset, size, size)
-            sprite.drawAll()
             love.graphics.pop() --Pop the camera transformations. Anything controlled by the camera should go before this.
         end)
         --Draw anything not affected by the camera and above the sprites here.
         gooi.draw()
+    end
+end
+
+local function checkControls()
+    controls:update()
+    if controls:down "jump" then
+        player.y = player.y - 1
+    end
+    if controls:down "left" then
+        player.x = player.x - 1
+    end
+    if controls:down "right" then
+        player.x = player.x + 1
+    end
+    if controls:down "duck" then
+        player.y = player.y + 1
     end
 end
 
@@ -116,39 +131,28 @@ function love.update(dt)
         loader.update()
     end
     scheduler.update(dt)
-    camera.inst.rotation = rot and (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360 or 0
+    cam.rotation = rot and (testSprite.rotation + 360 * math.sin(love.timer.getTime())) % 360 or 0
     gooi.update(dt)
     camera.update()
-end
-
-local function followMouse(x, y)
-    testSprite.x, testSprite.y = x, y
-    testSprite2.x, testSprite2.y = x, y
-    if not loadingAssets then
-        if x > love.graphics.getWidth() / 2 then
-            testSprite2.animations.idle:resume()
-        else
-            testSprite2.animations.idle:pause()
-        end
-    end
+    entity.updateAll()
+    checkControls()
 end
 
 function love.mousemoved(x, y)
-    followMouse(x, y)
 end
 
 function love.mousepressed(x, y, button)
     gooi.pressed()
     if button == 1 then
-        cam:panTo(testSprite2, 1)
+        cam:panTo(playerSprite, 1)
     elseif button == 2 then
-        local newZoom = math.random() * 1.5
+        local newZoom = math.random() * 5
         cam:zoomTo(newZoom, 1)
     elseif button == 3 then
         if cam.followFct then
             cam:unfollow()
         else
-            cam:follow(testSprite2)
+            cam:follow(playerSprite)
         end
     end
 end

@@ -45,6 +45,7 @@ end
 --- Returns the default metatable for this object.
 --- @treturn table The default metatable for this object.
 function object:defaultMetatable()
+    local obj = self
     local realElement = self.realTbl
     return {
         __newindex = function(_, key, val)
@@ -52,7 +53,7 @@ function object:defaultMetatable()
                 return
             end
             if type(realElement.callbacks[key]) == "table" then
-                realElement.triggerCallback(realElement, key, val)
+                realElement.triggerCallback(obj, key, val)
             else
                 realElement[key] = val
             end

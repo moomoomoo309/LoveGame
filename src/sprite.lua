@@ -232,26 +232,26 @@ function sprite:_draw(x, y, w, h, rotation, flipHorizontal, flipVertical, ox, oy
         self.sy = h / quadHeight --Y scale
 
         love.graphics.draw(img,
-        quad,
-        flipHorizontal and x + w - self.sx / w or x,
-        flipVertical and y + h - self.sy / h or y + self.sy / h,
-        math.rad(rotation),
-        flipHorizontal and -self.sx or self.sx,
-        flipVertical and -self.sy or self.sy,
-        ox,
-        oy)
+                quad,
+                math.floor(flipHorizontal and x + w - self.sx / w or x),
+                math.floor(flipVertical and y + h - self.sy / h or y + self.sy / h),
+                math.rad(rotation),
+                flipHorizontal and -self.sx or self.sx,
+                flipVertical and -self.sy or self.sy,
+                ox,
+                oy)
     else
         self.sx = w / img:getWidth() --X scale
         self.sy = h / img:getHeight() --Y scale
 
         love.graphics.draw(img,
-        flipHorizontal and x + w - self.sx / w or x,
-        flipVertical and y + h - self.sy / h or y + self.sy / h,
-        math.rad(rotation),
-        flipHorizontal and -self.sx or self.sx,
-        flipVertical and -self.sy or self.sy,
-        ox,
-        oy)
+                math.floor(flipHorizontal and x + w - self.sx / w or x),
+                math.floor(flipVertical and y + h - self.sy / h or y + self.sy / h),
+                math.rad(rotation),
+                flipHorizontal and -self.sx or self.sx,
+                flipVertical and -self.sy or self.sy,
+                ox,
+                oy)
     end
 
     --Don't forget to change the color back if you changed it before!

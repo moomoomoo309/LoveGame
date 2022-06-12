@@ -1,6 +1,6 @@
--- Some utility functions that shouldn't be exposed.
+local loader = require "love-loader.love-loader"
 
-local ffi = require "ffi"
+-- Some utility functions that shouldn't be exposed.
 local utils = {}
 
 -- https://github.com/stevedonovan/Penlight/blob/master/lua/pl/path.lua#L286
@@ -53,10 +53,20 @@ function utils.compensate(tile, tileX, tileY, tileW, tileH)
 end
 
 -- Cache images in main STI module
-function utils.cache_image(sti, path)
-    local image = love.graphics.newImage(path)
-    image:setFilter("nearest", "nearest")
-    sti.cache[path] = image
+function utils.cache_image(sti, path, image)
+    local tbl = { image = image }
+    loader.newImage(tbl, "image", path)
+    if loadingAssets then
+        loadingCallbacks[#loadingCallbacks + 1] = function()
+            tbl.image:setFilter("nearest", "nearest")
+            sti.cache[path] = tbl.image
+            tbl = nil
+        end
+    else
+        tbl.image:setFilter("nearest", "nearest")
+        sti.cache[path] = tbl.image
+        tbl = nil
+    end
 end
 
 -- We just don't know.
@@ -79,10 +89,11 @@ end
 
 -- Decompress tile layer data
 function utils.get_decompressed_data(data)
+    local ffi = require "ffi"
     local d = {}
     local decoded = ffi.cast("uint32_t*", data)
 
-    for i = 0, data:len() / ffi.sizeof("uint32_t") do
+    for i = 0, data:getSize() / ffi.sizeof("uint32_t") do
         table.insert(d, tonumber(decoded[i]))
     end
 
@@ -180,45 +191,52 @@ function utils.convert_isometric_to_screen(map, x, y)
     (tileX + tileY) * tileH / 2
 end
 
-function utils.hexToColor(Hex)
-
-    if Hex:sub(1, 1) == "#" then
-
-        Hex = Hex:sub(2)
-
+function utils.hex_to_color(hex)
+    if hex:sub(1, 1) == "#" then
+        hex = hex:sub(2)
     end
 
-    return { tonumber( Hex:sub(1, 2), 16 ), tonumber( Hex:sub(3, 4), 16 ), tonumber( Hex:sub(5, 6), 16 ) }
-
+    return {
+        r = tonumber(hex:sub(1, 2), 16),
+        g = tonumber(hex:sub(3, 4), 16),
+        b = tonumber(hex:sub(5, 6), 16)
+    }
 end
 
-function utils.pixelFunction(x, y, r, g, b, a)
+function utils.pixel_function(_, _, r, g, b, a)
+    local mask = utils._TC
 
-    local maskedColor = utils.transparentColor
-
-    if r == maskedColor[1] and g == maskedColor[2] and b == maskedColor[3] then
-
+    if r == mask.r and
+            g == mask.g and
+            b == mask.b then
         return r, g, b, 0
-
     end
 
     return r, g, b, a
-
 end
 
-function utils.fixTransparentColor(tileset)
+function utils.fix_transparent_color(tileset, path)
+    loader.newImage(tileset, "image", path)
 
-    if tileset.transparentcolor then
+    if loadingAssets then
+        loadingCallbacks[#loadingCallbacks + 1] = function()
+            if tileset.transparentcolor then
+                utils._TC = utils.hex_to_color(tileset.transparentcolor)
 
-        utils.transparentColor = utils.hexToColor(tileset.transparentcolor)
+                local image_data = tileset.image:getData()
+                image_data:mapPixel(utils.pixel_function)
+                tileset.image = love.graphics.newImage(image_data)
+            end
+        end
+    else
+        if tileset.transparentcolor then
+            utils._TC = utils.hex_to_color(tileset.transparentcolor)
 
-        local ImageData = tileset.image:getData()
-
-        ImageData:mapPixel(utils.pixelFunction)
-        tileset.image = love.graphics.newImage(ImageData)
-
+            local image_data = tileset.image:getData()
+            image_data:mapPixel(utils.pixel_function)
+            tileset.image = love.graphics.newImage(image_data)
+        end
     end
-
 end
 
 return utils
